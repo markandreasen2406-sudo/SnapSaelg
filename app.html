@@ -1,0 +1,342 @@
+<div style="--teal:#028090; --seafoam:#00A896; --mint:#02C39A; --dark:#013C44; --ink:#163238; --sub:#5C7377; --tint:#EAF5F4; --border:#D3E7E5; --warn:#B0413E;
+  font-family: Calibri, 'Segoe UI', Arial, sans-serif; color: var(--ink); max-width: 640px; margin: 0 auto; padding: 1.5rem 1rem;">
+
+  <div style="text-align:center; margin-bottom:1.75rem;">
+    <div style="width:52px;height:52px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></svg>
+    </div>
+    <h1 style="font-family:Cambria, Georgia, serif; font-size:1.5rem; font-weight:700; margin:0;">SnapSælg — test</h1>
+    <p id="headerSub" style="color:var(--sub); font-size:0.9rem; margin:0.35rem 0 0;">Upload op til 15 billeder af din fars ting. Gennemgå dem én ad gangen, kopiér titel og beskrivelse hver for sig.</p>
+  </div>
+
+  <!-- STEP 1: upload -->
+  <div id="uploadStep">
+    <div id="uploadZone" style="border:2px dashed var(--border); border-radius:12px; padding:2rem 1rem; text-align:center; cursor:pointer; background:var(--tint);">
+      <input type="file" id="fileInput" accept="image/*" multiple style="display:none">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#5C7377" stroke-width="1.6" style="margin-bottom:0.5rem;"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></svg>
+      <div style="font-size:0.95rem; color:var(--ink); font-weight:600;">Tryk for at vælge billeder</div>
+      <div style="font-size:0.8rem; color:var(--sub); margin-top:0.25rem;">Ét billede per vare, op til 15 ad gangen</div>
+      <div style="font-size:0.78rem; color:var(--seafoam); margin-top:0.6rem; background:rgba(0,168,150,0.1); border-radius:6px; padding:0.4rem 0.6rem; display:inline-block;">💡 Tip: læg varen på et lyst tæppe, håndklæde eller stykke karton — så ser billedet pænt ud, selvom rummet ikke er det</div>
+    </div>
+  </div>
+
+  <!-- STEP 2: queue preview -->
+  <div id="queueStep" style="display:none;">
+    <div id="thumbGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(72px, 1fr)); gap:0.5rem; margin-bottom:1rem;"></div>
+    <button id="generateAllBtn" style="width:100%; padding:0.85rem; border:none; border-radius:10px; background:var(--teal); color:#fff; font-size:1rem; font-weight:600; cursor:pointer;"></button>
+    <button id="resetBtn" style="width:100%; margin-top:0.5rem; padding:0.6rem; border:1px solid var(--border); border-radius:10px; background:transparent; color:var(--sub); font-size:0.85rem; cursor:pointer;">Start forfra</button>
+  </div>
+
+  <!-- STEP 3: processing -->
+  <div id="processingStep" style="display:none; text-align:center; padding:2rem 0;">
+    <div id="progressText" style="color:var(--sub); font-size:0.95rem; margin-bottom:0.75rem;"></div>
+    <div style="background:var(--tint); border-radius:999px; height:8px; overflow:hidden;">
+      <div id="progressFill" style="background:var(--teal); height:100%; width:0%; transition:width .2s;"></div>
+    </div>
+  </div>
+
+  <!-- STEP 4: review -->
+  <div id="reviewStep" style="display:none;">
+    <div id="cardCounter" style="text-align:center; color:var(--sub); font-size:0.85rem; margin-bottom:0.75rem;"></div>
+    <div id="reviewCard"></div>
+    <div style="display:flex; gap:0.6rem; margin-top:1rem;">
+      <button id="prevBtn" style="flex:1; padding:0.7rem; border:1px solid var(--border); border-radius:10px; background:#fff; color:var(--ink); font-size:0.9rem; cursor:pointer;">← Forrige</button>
+      <button id="nextBtn" style="flex:1; padding:0.7rem; border:none; border-radius:10px; background:var(--teal); color:#fff; font-size:0.9rem; font-weight:600; cursor:pointer;">Næste →</button>
+    </div>
+    <button id="resetBtn2" style="width:100%; margin-top:0.75rem; padding:0.6rem; border:1px solid var(--border); border-radius:10px; background:transparent; color:var(--sub); font-size:0.85rem; cursor:pointer;">Start forfra med nye billeder</button>
+  </div>
+
+<script>
+const MAX_ITEMS = 15;
+let items = []; // {file, base64, mediaType, previewUrl, result, status}
+let currentIndex = 0;
+
+const uploadZone = document.getElementById('uploadZone');
+const fileInput = document.getElementById('fileInput');
+const uploadStep = document.getElementById('uploadStep');
+const queueStep = document.getElementById('queueStep');
+const processingStep = document.getElementById('processingStep');
+const reviewStep = document.getElementById('reviewStep');
+const thumbGrid = document.getElementById('thumbGrid');
+const generateAllBtn = document.getElementById('generateAllBtn');
+const progressText = document.getElementById('progressText');
+const progressFill = document.getElementById('progressFill');
+const cardCounter = document.getElementById('cardCounter');
+const reviewCard = document.getElementById('reviewCard');
+const headerSub = document.getElementById('headerSub');
+
+uploadZone.addEventListener('click', () => fileInput.click());
+
+function resizeImage(file, maxDim = 1568, quality = 0.85) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > maxDim || height > maxDim) {
+          if (width > height) { height = Math.round(height * (maxDim / width)); width = maxDim; }
+          else { width = Math.round(width * (maxDim / height)); height = maxDim; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        const dataUrl = canvas.toDataURL('image/jpeg', quality);
+        resolve({ base64: dataUrl.split(',')[1], mediaType: 'image/jpeg', previewUrl: dataUrl });
+      };
+      img.onerror = () => reject(new Error('Ugyldigt billedformat'));
+      img.src = reader.result;
+    };
+    reader.onerror = () => reject(new Error('Kunne ikke læse filen'));
+    reader.readAsDataURL(file);
+  });
+}
+
+fileInput.addEventListener('change', async (e) => {
+  const files = Array.from(e.target.files).slice(0, MAX_ITEMS);
+  if (!files.length) return;
+  items = [];
+  for (let i = 0; i < files.length; i++) {
+    try {
+      const resized = await resizeImage(files[i]);
+      items[i] = { file: files[i], ...resized, result: null, status: 'pending' };
+    } catch (err) {
+      items[i] = { file: files[i], base64: null, mediaType: null, previewUrl: null, result: null, status: 'error', error: 'Kunne ikke læse billedet' };
+    }
+  }
+  showQueue();
+});
+
+function showQueue() {
+  uploadStep.style.display = 'none';
+  queueStep.style.display = 'block';
+  thumbGrid.innerHTML = items.map(it =>
+    `<img src="${it.previewUrl}" style="width:100%; aspect-ratio:1; object-fit:cover; border-radius:8px; border:1px solid var(--border);">`
+  ).join('');
+  generateAllBtn.textContent = `Generér ${items.length} annonce${items.length > 1 ? 'r' : ''}`;
+}
+
+document.getElementById('resetBtn').addEventListener('click', resetAll);
+document.getElementById('resetBtn2').addEventListener('click', resetAll);
+function resetAll() {
+  items = []; currentIndex = 0; fileInput.value = '';
+  uploadStep.style.display = 'block';
+  queueStep.style.display = 'none';
+  reviewStep.style.display = 'none';
+  headerSub.textContent = "Upload op til 15 billeder af din fars ting. Gennemgå dem én ad gangen, kopiér titel og beskrivelse hver for sig.";
+}
+
+const CONDITIONS = ["Ny", "Som ny", "Brugt, pæn stand", "Brugt, slidt", "Defekt / til reservedele"];
+
+const PROMPT = `Du hjælper med at skrive KORTE, SÆLGENDE annoncer til brugte varer på danske markedspladser (DBA, Facebook Marketplace, Vinted) ud fra et billede, og estimere en realistisk pris.
+
+VIGTIGT om prisestimering — skeln mellem to typer varer:
+- ALMINDELIGE/FUNKTIONELLE varer (fx babyudstyr, husholdningsapparater, standardmøbler uden kendt designer): her varierer prisen ikke meget med mærke. Giv et selvsikkert estimat.
+- DESIGN/LUKSUS/SAMLERVARER (fx designermøbler, ure, smykker, mærkevaretøj, high-end elektronik): her kan prisen variere 10-50x afhængig af det PRÆCISE mærke/designer/model/år. Kig altid efter synlige mærker, stempler, signaturer eller distinkte designtræk. Hvis du IKKE er sikker på det præcise mærke/model, MÅ DU IKKE gætte selvsikkert på prisen. Sæt i stedet needs_brand_confirmation til true, sæt price_dkk til "Bekræft mærke for prisforslag", og skriv et konkret, specifikt spørgsmål i confirmation_question (fx "Denne sofa ligner en designer-model — kender du mærke/designer og evt. årstal?").
+
+Analysér billedet og generér:
+1. Titel (maks. 60 tegn) i stil med dem man ser på DBA
+2. Beskrivelse — maks. 2-3 korte, sælgende sætninger. Skriv som en rigtig sælger, ikke en teknisk specifikation.
+3. Foreslået kategori (i platformenes eget sprog, fx "Møbler", "Mobiltelefoner")
+4. Foreslået stand — vælg PRÆCIS én af disse fem: "Ny", "Som ny", "Brugt, pæn stand", "Brugt, slidt", "Defekt / til reservedele"
+5. Prisforslag i DKK efter reglen ovenfor
+6. Kort begrundelse for prisen
+7. needs_brand_confirmation: true eller false
+8. confirmation_question: spørgsmålet hvis true, ellers tom streng
+
+Svar UDELUKKENDE med gyldig JSON, intet andet:
+{"title": "...", "description": "...", "suggested_category": "...", "suggested_condition": "...", "price_dkk": "...", "price_reasoning": "...", "needs_brand_confirmation": false, "confirmation_question": ""}`;
+
+function refinePrompt(brandText, condition) {
+  return `Brugeren har bekræftet yderligere information om varen på billedet:
+Mærke/model/designer: ${brandText || "(ikke oplyst)"}
+Stand: ${condition}
+
+Opdatér titel og beskrivelse så de afspejler denne bekræftede information. Nævn mærket/designeren, hvis det reelt øger salgsværdien.
+
+Om prisen: Hvis dette nu er en almindelig, veldefineret vare, giv ét selvsikkert prisforslag. MEN hvis dette er en potentielt værdifuld design-, vintage- eller samlervare (fx dansk designmøbel, ure, kunst, antikviteter), hvor den præcise model, produktionsår eller ægthed stadig ikke kan bekræftes ud fra billedet alene: giv i stedet et ærligt, bredere prisinterval (fx "12.000-22.000 kr") frem for et enkelt tal — det er mere korrekt end falsk præcision. Forklar kort i price_reasoning hvorfor der er en range, og nævn eksplicit om prisintervallet du kender bedst til er NYPRIS fra forhandlere eller brugt-pris mellem private, da de kan være meget forskellige. Udfyld desuden research_tip med en kort forklaring af hvad brugeren bør tjekke selv. Udfyld search_query med en kort, konkret Google-søgefrase (3-5 ord, fx "wegner getama sofa brugt"), som brugeren kan klikke sig direkte til — men kun hvis det reelt er en type vare, hvor sådan en søgning giver mening. Ellers lad research_tip og search_query være tomme strenge.
+
+Svar UDELUKKENDE med gyldig JSON, intet andet:
+{"title": "...", "description": "...", "price_dkk": "...", "price_reasoning": "...", "research_tip": "...", "search_query": "..."}`;
+}
+
+generateAllBtn.addEventListener('click', async () => {
+  queueStep.style.display = 'none';
+  processingStep.style.display = 'block';
+
+  for (let i = 0; i < items.length; i++) {
+    progressText.textContent = `Analyserer vare ${i + 1} af ${items.length}…`;
+    progressFill.style.width = Math.round((i / items.length) * 100) + '%';
+    if (items[i].status === 'error' || !items[i].base64) {
+      items[i].status = 'error';
+      items[i].error = items[i].error || 'Billedet kunne ikke læses';
+      continue;
+    }
+    try {
+      const response = await fetch("/.netlify/functions/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-6",
+          max_tokens: 1000,
+          messages: [{
+            role: "user",
+            content: [
+              { type: "image", source: { type: "base64", media_type: items[i].mediaType, data: items[i].base64 } },
+              { type: "text", text: PROMPT }
+            ]
+          }]
+        })
+      });
+      if (!response.ok) throw new Error('API-fejl ' + response.status);
+      const data = await response.json();
+      const text = (data.content || []).map(b => b.text || '').join('\n').trim();
+      const clean = text.replace(/```json|```/g, '').trim();
+      items[i].result = JSON.parse(clean);
+      items[i].status = 'done';
+    } catch (err) {
+      items[i].status = 'error';
+      items[i].error = err.message;
+    }
+  }
+  progressFill.style.width = '100%';
+  currentIndex = 0;
+  processingStep.style.display = 'none';
+  reviewStep.style.display = 'block';
+  headerSub.textContent = "Gennemgå hver vare, kopiér titel og beskrivelse hver for sig ind i DBA/Facebook/Vinted.";
+  renderCard();
+});
+
+document.getElementById('prevBtn').addEventListener('click', () => {
+  currentIndex = Math.max(0, currentIndex - 1);
+  renderCard();
+});
+document.getElementById('nextBtn').addEventListener('click', () => {
+  currentIndex = Math.min(items.length - 1, currentIndex + 1);
+  renderCard();
+});
+
+function copyField(text, btn, label) {
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = 'Kopieret ✓';
+    setTimeout(() => { btn.textContent = orig; }, 1500);
+  });
+}
+
+function renderCard() {
+  const it = items[currentIndex];
+  cardCounter.textContent = `Vare ${currentIndex + 1} af ${items.length}`;
+  document.getElementById('prevBtn').style.opacity = currentIndex === 0 ? '0.4' : '1';
+  document.getElementById('nextBtn').textContent = currentIndex === items.length - 1 ? 'Sidste vare ✓' : 'Næste →';
+
+  if (it.status === 'error') {
+    reviewCard.innerHTML = `<div style="background:var(--tint); border:1px solid var(--border); border-radius:12px; padding:1.25rem; text-align:center; color:var(--warn); font-size:0.9rem;">Kunne ikke analysere dette billede (${escapeHtml(it.error || '')}). Spring til næste eller prøv igen senere.</div>`;
+    return;
+  }
+
+  const r = it.result;
+  const needsConfirm = !!r.needs_brand_confirmation;
+  const condOptions = CONDITIONS.map(c =>
+    `<option value="${c}" ${c === r.suggested_condition ? 'selected' : ''}>${c}</option>`
+  ).join('');
+
+  reviewCard.innerHTML = `
+    <div style="background:var(--dark); border-radius:12px; padding:1.5rem;">
+      <img src="${it.previewUrl}" style="width:100%; max-height:180px; object-fit:contain; border-radius:8px; margin-bottom:1.1rem; background:rgba(255,255,255,0.06);">
+
+      <div style="color:#8FC7C4; font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:0.4rem;">Titel</div>
+      <div id="titleText" style="color:#fff; font-family:Cambria, Georgia, serif; font-size:1.1rem; font-weight:700; margin-bottom:0.6rem;">${escapeHtml(r.title || '—')}</div>
+      <button class="copyTitleBtn" style="width:100%; padding:0.55rem; margin-bottom:1.1rem; border:1px solid rgba(255,255,255,0.25); border-radius:8px; background:transparent; color:#fff; font-size:0.85rem; cursor:pointer;">Kopiér titel</button>
+
+      <div style="color:#8FC7C4; font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:0.4rem;">Beskrivelse</div>
+      <div id="descText" style="color:#D7ECEA; font-size:0.9rem; line-height:1.5; margin-bottom:0.6rem;">${escapeHtml(r.description || '—')}</div>
+      <button class="copyDescBtn" style="width:100%; padding:0.55rem; margin-bottom:1.1rem; border:1px solid rgba(255,255,255,0.25); border-radius:8px; background:transparent; color:#fff; font-size:0.85rem; cursor:pointer;">Kopiér beskrivelse</button>
+
+      <div style="color:#8FC7C4; font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:0.4rem;">Pris — ret selv hvis du er uenig</div>
+      <div style="display:flex; align-items:center; gap:0.4rem; margin-bottom:0.25rem;">
+        <input id="priceInput" type="text" value="${escapeHtml(r.price_dkk || '')}" style="flex:1; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.25); border-radius:8px; padding:0.5rem 0.7rem; color:var(--mint); font-family:Cambria, Georgia, serif; font-size:1.15rem; font-weight:700;">
+      </div>
+      <div id="priceReasoning" style="color:#9FC4C1; font-size:0.78rem; margin-bottom:${r.research_tip ? '0.5rem' : '1rem'};">${escapeHtml(r.price_reasoning || '')}</div>
+      ${r.research_tip ? `<div style="background:rgba(2,195,154,0.12); border:1px solid rgba(2,195,154,0.35); border-radius:8px; padding:0.55rem 0.75rem; font-size:0.78rem; color:#9FE1CB; margin-bottom:1rem;">💡 ${escapeHtml(r.research_tip)}</div>` : ''}
+
+      <div style="display:flex; gap:0.6rem; flex-wrap:wrap; margin-bottom:1rem;">
+        <div style="background:rgba(255,255,255,0.08); border-radius:8px; padding:0.5rem 0.7rem; flex:1; min-width:120px;">
+          <div style="color:#8FC7C4; font-size:0.65rem; text-transform:uppercase; margin-bottom:0.2rem;">Kategori</div>
+          <div style="color:#fff; font-size:0.85rem; font-weight:600;">${escapeHtml(r.suggested_category || '—')}</div>
+        </div>
+      </div>
+
+      <div style="background:${needsConfirm ? 'rgba(186,117,23,0.18)' : 'rgba(255,255,255,0.06)'}; border:1px solid ${needsConfirm ? 'rgba(250,199,117,0.5)' : 'rgba(255,255,255,0.12)'}; border-radius:10px; padding:0.9rem;">
+        ${needsConfirm
+          ? `<div style="color:#FAC775; font-size:0.85rem; font-weight:600; margin-bottom:0.7rem;">⚠ ${escapeHtml(r.confirmation_question || 'Usikker på præcist mærke/model — bekræft for et bedre prisforslag.')}</div>`
+          : `<div style="color:#D7ECEA; font-size:0.78rem; margin-bottom:0.7rem;">Kender du et mærke/model, eller vil du justere stand? Opdatér prisforslaget.</div>`
+        }
+        <input id="brandInput" type="text" placeholder="Mærke / model / designer (valgfrit)" style="width:100%; box-sizing:border-box; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.25); border-radius:8px; padding:0.5rem 0.7rem; color:#fff; font-size:0.85rem; margin-bottom:0.6rem;">
+        <select id="conditionSelect" style="width:100%; box-sizing:border-box; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.25); border-radius:8px; padding:0.5rem 0.7rem; color:#fff; font-size:0.85rem; margin-bottom:0.6rem;">${condOptions}</select>
+        <button id="refineBtn" style="width:100%; padding:0.6rem; border:none; border-radius:8px; background:var(--mint); color:var(--dark); font-size:0.85rem; font-weight:700; cursor:pointer;">Opdatér prisforslag</button>
+        <div id="refineStatus" style="text-align:center; font-size:0.78rem; color:#D7ECEA; margin-top:0.5rem; display:none;"></div>
+      </div>
+    </div>
+  `;
+  reviewCard.querySelector('.copyTitleBtn').addEventListener('click', (e) => copyField(r.title, e.target));
+  reviewCard.querySelector('.copyDescBtn').addEventListener('click', (e) => copyField(r.description, e.target));
+  reviewCard.querySelector('#refineBtn').addEventListener('click', () => refineItem(currentIndex));
+}
+
+async function refineItem(index) {
+  const it = items[index];
+  const brandText = document.getElementById('brandInput').value.trim();
+  const condition = document.getElementById('conditionSelect').value;
+  const btn = document.getElementById('refineBtn');
+  const statusEl = document.getElementById('refineStatus');
+  btn.disabled = true;
+  btn.style.opacity = '0.6';
+  statusEl.style.display = 'block';
+  statusEl.textContent = 'Opdaterer…';
+
+  try {
+    const response = await fetch("/.netlify/functions/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-6",
+        max_tokens: 800,
+        messages: [{
+          role: "user",
+          content: [
+            { type: "image", source: { type: "base64", media_type: it.mediaType, data: it.base64 } },
+            { type: "text", text: refinePrompt(brandText, condition) }
+          ]
+        }]
+      })
+    });
+    if (!response.ok) throw new Error('API-fejl ' + response.status);
+    const data = await response.json();
+    const text = (data.content || []).map(b => b.text || '').join('\n').trim();
+    const clean = text.replace(/```json|```/g, '').trim();
+    const refined = JSON.parse(clean);
+
+    it.result.title = refined.title;
+    it.result.description = refined.description;
+    it.result.price_dkk = refined.price_dkk;
+    it.result.price_reasoning = refined.price_reasoning;
+    it.result.research_tip = refined.research_tip || '';
+    it.result.suggested_condition = condition;
+    it.result.needs_brand_confirmation = false;
+    renderCard();
+  } catch (err) {
+    statusEl.textContent = 'Kunne ikke opdatere: ' + err.message;
+    btn.disabled = false;
+    btn.style.opacity = '1';
+  }
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str == null ? '' : str;
+  return div.innerHTML;
+}
+</script>
+</div>

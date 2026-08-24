@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SnapSælg — Fra rodet reol til salgsklar annonce</title>
+<style>
+  :root{
+    --teal:#028090; --seafoam:#00A896; --mint:#02C39A; --dark:#013C44;
+    --ink:#132B30; --sub:#5C7377; --paper:#FCFEFD; --tint:#EAF5F4;
+    --border:#D7E9E7; --warn:#B0413E;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:'Calibri','Segoe UI',Arial,sans-serif; line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:Cambria,Georgia,'Times New Roman',serif; font-weight:700; margin:0; color:var(--ink);}
+  p{margin:0;}
+  a{color:inherit;}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 1.5rem;}
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:0.5rem; font-size:0.78rem;
+    letter-spacing:0.08em; text-transform:uppercase; font-weight:700; color:var(--seafoam);
+  }
+  .eyebrow::before{content:""; width:8px; height:8px; border-radius:50%; background:var(--mint);}
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:0.5rem;
+    padding:0.85rem 1.6rem; border-radius:999px; font-size:0.95rem; font-weight:700;
+    text-decoration:none; cursor:pointer; border:none; transition:transform .15s, box-shadow .15s;
+  }
+  .btn:hover{transform:translateY(-1px);}
+  .btn-primary{background:var(--dark); color:#fff; box-shadow:0 6px 20px rgba(1,60,68,0.25);}
+  .btn-ghost{background:transparent; color:var(--dark); border:1.5px solid var(--border);}
+
+  /* NAV */
+  header{position:sticky; top:0; z-index:20; background:rgba(252,254,253,0.9); backdrop-filter:blur(8px); border-bottom:1px solid var(--border);}
+  nav{display:flex; align-items:center; justify-content:space-between; padding:1rem 1.5rem; max-width:1120px; margin:0 auto;}
+  .brand{display:flex; align-items:center; gap:0.55rem; font-family:Cambria,Georgia,serif; font-weight:700; font-size:1.25rem; color:var(--ink); text-decoration:none;}
+  .brand-mark{width:34px; height:34px; border-radius:10px; background:var(--teal); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  nav .links{display:flex; gap:1.8rem; font-size:0.92rem; font-weight:600; color:var(--sub);}
+  nav .links a{text-decoration:none;}
+  nav .links a:hover{color:var(--teal);}
+  @media (max-width:760px){ nav .links{display:none;} }
+
+  /* HERO */
+  .hero{padding:4.5rem 0 5rem; overflow:hidden; position:relative;}
+  .hero-grid{display:grid; grid-template-columns:1.05fr 0.95fr; gap:3rem; align-items:center;}
+  @media (max-width:900px){ .hero-grid{grid-template-columns:1fr;} }
+  .hero h1{font-size:clamp(2.3rem, 4.6vw, 3.5rem); line-height:1.08; letter-spacing:-0.01em; margin:1rem 0 1.3rem;}
+  .hero h1 em{font-style:normal; color:var(--teal); border-bottom:4px solid var(--mint); padding-bottom:2px;}
+  .hero p.lede{font-size:1.15rem; color:var(--sub); max-width:34rem; margin-bottom:2rem;}
+  .hero .ctas{display:flex; gap:0.9rem; flex-wrap:wrap;}
+  .hero-visual{position:relative;}
+  .phone{
+    width:min(300px, 100%); margin:0 auto; background:var(--dark); border-radius:34px;
+    padding:14px; box-shadow:0 30px 60px -20px rgba(1,60,68,0.45); position:relative;
+  }
+  .phone-screen{background:var(--paper); border-radius:22px; overflow:hidden; padding:1.1rem;}
+  .mock-photo{background:linear-gradient(135deg,#DCEEEC,#C7E3E0); border-radius:12px; height:120px; display:flex; align-items:center; justify-content:center; margin-bottom:0.9rem;}
+  .mock-tag{position:absolute; background:var(--mint); color:var(--dark); font-size:0.68rem; font-weight:700; padding:0.3rem 0.6rem; border-radius:999px; box-shadow:0 8px 16px rgba(2,195,154,0.35);}
+  .mock-tag.t1{top:38%; left:-8%;}
+  .mock-tag.t2{top:60%; right:-10%;}
+  .mock-title{font-family:Cambria,serif; font-weight:700; font-size:0.92rem; margin-bottom:0.4rem;}
+  .mock-desc{font-size:0.72rem; color:var(--sub); margin-bottom:0.8rem; line-height:1.4;}
+  .mock-price{display:flex; justify-content:space-between; align-items:center; background:var(--tint); border-radius:8px; padding:0.5rem 0.7rem;}
+  .mock-price b{font-family:Cambria,serif; color:var(--teal); font-size:1.05rem;}
+
+  section{padding:5rem 0;}
+  .section-head{max-width:38rem; margin-bottom:3rem;}
+  .section-head h2{font-size:clamp(1.7rem,3vw,2.3rem); margin-top:0.7rem;}
+  .section-head p{color:var(--sub); font-size:1.05rem; margin-top:0.8rem;}
+
+  /* PROBLEM */
+  .problem{background:var(--tint);}
+  .audience-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem;}
+  @media (max-width:800px){ .audience-grid{grid-template-columns:1fr;} }
+  .card{background:var(--paper); border:1px solid var(--border); border-radius:16px; padding:1.8rem;}
+  .icon-circle{width:48px; height:48px; border-radius:12px; background:var(--teal); display:flex; align-items:center; justify-content:center; margin-bottom:1.1rem;}
+  .card h3{font-size:1.1rem; margin-bottom:0.6rem;}
+  .card p{color:var(--sub); font-size:0.92rem;}
+
+  /* HOW IT WORKS */
+  .steps{display:grid; grid-template-columns:repeat(4,1fr); gap:1.3rem; counter-reset:step;}
+  @media (max-width:900px){ .steps{grid-template-columns:1fr 1fr;} }
+  @media (max-width:520px){ .steps{grid-template-columns:1fr;} }
+  .step{position:relative; padding-top:0.5rem;}
+  .step .num{font-family:Cambria,serif; font-size:2.1rem; font-weight:700; color:var(--border); line-height:1;}
+  .step h3{font-size:1.05rem; margin:0.6rem 0 0.5rem;}
+  .step p{color:var(--sub); font-size:0.9rem;}
+  .note-strip{margin-top:2.5rem; padding:1rem 1.3rem; border-left:3px solid var(--mint); background:var(--tint); border-radius:0 10px 10px 0; font-size:0.9rem; color:var(--ink);}
+
+  /* WHY */
+  .why-grid{display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;}
+  @media (max-width:760px){ .why-grid{grid-template-columns:1fr;} }
+  .why-card{border:1px solid var(--border); border-radius:16px; padding:1.8rem;}
+  .why-card h3{font-size:1.08rem; margin-bottom:0.55rem; display:flex; align-items:center; gap:0.6rem;}
+  .why-card p{color:var(--sub); font-size:0.92rem;}
+  .dot{width:9px; height:9px; border-radius:50%; background:var(--mint); flex-shrink:0;}
+
+  /* PRICING */
+  .pricing{background:var(--dark); color:#fff;}
+  .pricing .section-head p{color:#9FC4C1;}
+  .pricing .section-head .eyebrow{color:var(--mint);}
+  .price-grid{display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;}
+  @media (max-width:760px){ .price-grid{grid-template-columns:1fr;} }
+  .price-card{background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.14); border-radius:18px; padding:2rem;}
+  .price-card .tag{font-size:0.75rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--mint); font-weight:700;}
+  .price-card h3{color:#fff; font-size:1.3rem; margin:0.6rem 0 0.8rem;}
+  .price-card .amount{font-family:Cambria,serif; font-size:2.1rem; font-weight:700; color:#fff;}
+  .price-card .amount span{font-size:0.95rem; color:#9FC4C1; font-weight:400;}
+  .price-card ul{list-style:none; padding:0; margin:1.3rem 0 0; font-size:0.9rem; color:#D7ECEA;}
+  .price-card li{padding:0.4rem 0; padding-left:1.4rem; position:relative;}
+  .price-card li::before{content:"✓"; position:absolute; left:0; color:var(--mint); font-weight:700;}
+
+  /* FAQ */
+  .faq-item{border-bottom:1px solid var(--border); padding:1.3rem 0;}
+  .faq-q{display:flex; justify-content:space-between; align-items:center; cursor:pointer; font-weight:700; font-size:1rem;}
+  .faq-q .plus{font-size:1.3rem; color:var(--teal); transition:transform .2s;}
+  .faq-a{max-height:0; overflow:hidden; transition:max-height .25s ease; color:var(--sub); font-size:0.92rem;}
+  .faq-item.open .faq-a{max-height:200px; margin-top:0.8rem;}
+  .faq-item.open .plus{transform:rotate(45deg);}
+
+  /* CTA */
+  .cta-final{background:linear-gradient(135deg, var(--teal), var(--dark)); color:#fff; border-radius:24px; padding:3.2rem 2.5rem; text-align:center; margin:0 1.5rem;}
+  .cta-final h2{color:#fff; font-size:clamp(1.6rem,3vw,2.1rem);}
+  .cta-final p{color:#CFE9E7; margin:0.9rem auto 1.8rem; max-width:32rem;}
+  .cta-final .btn-primary{background:#fff; color:var(--dark);}
+
+  footer{padding:3rem 1.5rem 2.5rem; text-align:center; color:var(--sub); font-size:0.85rem;}
+  footer .brand{justify-content:center; margin-bottom:0.6rem;}
+  footer .foot-links{margin-top:0.8rem; display:flex; gap:1.2rem; justify-content:center; font-size:0.82rem;}
+  footer .foot-links a{text-decoration:underline; color:var(--sub);}
+
+  /* CAMPAIGN STRIP */
+  .campaign-strip{background:var(--mint); color:var(--dark); text-align:center; font-size:0.88rem; font-weight:700; padding:0.6rem 1rem;}
+  .campaign-strip span{font-weight:400;}
+
+  /* ABOUT / STORY */
+  .about-grid{display:grid; grid-template-columns:1.2fr 0.8fr; gap:2.5rem; align-items:start;}
+  @media (max-width:800px){ .about-grid{grid-template-columns:1fr;} }
+  .about-grid p{color:var(--ink); font-size:1.02rem; margin-bottom:1rem; line-height:1.65;}
+  .mission-box{background:var(--tint); border:1px solid var(--border); border-radius:16px; padding:1.8rem;}
+  .mission-box .eyebrow{margin-bottom:0.8rem;}
+  .mission-box p{color:var(--ink); font-size:0.98rem; line-height:1.6;}
+  .draft-flag{display:inline-block; font-size:0.72rem; font-weight:700; letter-spacing:0.03em; color:var(--warn); background:rgba(176,65,62,0.1); border:1px solid rgba(176,65,62,0.3); border-radius:6px; padding:0.2rem 0.55rem; margin-bottom:0.9rem;}
+
+  /* YDELSE */
+  .ydelse-list{display:grid; grid-template-columns:1fr 1fr; gap:1.6rem 2.2rem;}
+  @media (max-width:760px){ .ydelse-list{grid-template-columns:1fr;} }
+  .ydelse-item{display:flex; gap:1rem; align-items:flex-start;}
+  .ydelse-item .icon-circle{flex-shrink:0; width:42px; height:42px; margin-bottom:0;}
+  .ydelse-item h3{font-size:1.02rem; margin-bottom:0.35rem;}
+  .ydelse-item p{color:var(--sub); font-size:0.9rem;}
+</style>
+</head>
+<body>
+
+<div class="campaign-strip">🎉 Vi lancerer lige nu — <span>helt gratis at prøve i denne omgang. Vi vil bare gerne have din ærlige mening.</span></div>
+
+<header>
+  <nav>
+    <a href="#" class="brand"><span class="brand-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></svg></span>SnapSælg</a>
+    <div class="links">
+      <a href="#ydelse">Vores ydelse</a>
+      <a href="#saadan">Sådan virker det</a>
+      <a href="#hvem">Hvem er det til</a>
+      <a href="#om">Vores historie</a>
+      <a href="#faq">Spørgsmål</a>
+    </div>
+    <a href="#kontakt" class="btn btn-primary" style="padding:0.6rem 1.3rem; font-size:0.85rem;">Kom i gang</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">Lancerer 1. september · Danmark</span>
+      <h1>Fra rodet reol til <em>salgsklar annonce</em> på under et minut</h1>
+      <p class="lede">Fotografér dine ting. SnapSælg genererer titel, beskrivelse og prisforslag automatisk — klar til at indsætte direkte på DBA, Facebook og Vinted.</p>
+      <div class="ctas">
+        <a href="#kontakt" class="btn btn-primary">Bliv tidlig bruger</a>
+        <a href="#saadan" class="btn btn-ghost">Se hvordan det virker ↓</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="mock-photo">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#028090" stroke-width="1.6"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></svg>
+          </div>
+          <div class="mock-title">Retro pladespiller, virker fint</div>
+          <div class="mock-desc">Velholdt pladespiller med varm lyd — perfekt til samlingen eller stuen. Sælges pga. flytning.</div>
+          <div class="mock-price"><span style="font-size:0.75rem; color:var(--sub);">Prisforslag</span><b>450 kr</b></div>
+        </div>
+        <span class="mock-tag t1">✓ Titel klar</span>
+        <span class="mock-tag t2">✓ Pris foreslået</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="problem" id="hvem">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Problemet</span>
+      <h2>At skrive én annonce er let. At skrive halvtreds er hverken sjovt eller hurtigt.</h2>
+      <p>Hver ting kræver sit eget billede, sin egen tekst — og skal postes manuelt de rigtige steder. Det rammer tre typer mennesker på præcis samme måde.</p>
+    </div>
+    <div class="audience-grid">
+      <div class="card">
+        <div class="icon-circle"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></div>
+        <h3>Private, der rydder op</h3>
+        <p>En garage eller et loft fuldt af ting — ingen tid eller lyst til at annoncere hver ting enkeltvis.</p>
+      </div>
+      <div class="card">
+        <div class="icon-circle"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/></svg></div>
+        <h3>Aktive resellere</h3>
+        <p>Sælger jævnligt på flere platforme og taber timer på at genskrive samme annonce igen og igen.</p>
+      </div>
+      <div class="card">
+        <div class="icon-circle"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg></div>
+        <h3>Dødsbo- og flyttefirmaer</h3>
+        <p>Rydder hele hjem professionelt, hver eneste uge — samme flaskehals, bare i stor skala.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="ydelse">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Vores ydelse</span>
+      <h2>Det, du konkret får</h2>
+      <p>Ikke bare "en app" — her er nøjagtig, hvad SnapSælg leverer, hver gang du bruger den.</p>
+    </div>
+    <div class="ydelse-list">
+      <div class="ydelse-item">
+        <div class="icon-circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></svg></div>
+        <div><h3>AI-genereret annoncetekst</h3><p>Titel, beskrivelse, kategori og standvurdering ud fra dine billeder, skrevet i dansk salgssprog — ikke en teknisk oversættelse.</p></div>
+      </div>
+      <div class="ydelse-item">
+        <div class="icon-circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+        <div><h3>Gennemtænkt prisforslag</h3><p>Selvsikkert på almindelige varer. På sjældne eller værdifulde ting: et ærligt interval, ikke et forkert gæt.</p></div>
+      </div>
+      <div class="ydelse-item">
+        <div class="icon-circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
+        <div><h3>Batch-behandling</h3><p>Op til 15 varer i én omgang, gennemgået roligt én ad gangen — ikke ét kaotisk billede-bjerg.</p></div>
+      </div>
+      <div class="ydelse-item">
+        <div class="icon-circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></div>
+        <div><h3>Klar til kopiering</h3><p>Titel og beskrivelse i separate felter, formateret præcis til hvert felt på DBA, Facebook og Vinted.</p></div>
+      </div>
+      <div class="ydelse-item">
+        <div class="icon-circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <div><h3>Ingen automatisk postning</h3><p>Vi rører aldrig dine konti på DBA, Facebook eller Vinted. Du bevarer fuld kontrol, altid.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="saadan">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Sådan virker det</span>
+      <h2>Fire trin, ingen læringskurve</h2>
+      <p>Ingen automatisk postning til DBA, Facebook eller Vinted — du beholder fuld kontrol, og din konto er aldrig i fare.</p>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="num">01</div><h3>Fotografér</h3><p>Tag op til 15 billeder ad gangen — ét ad gangen, eller hele bunken på én gang.</p></div>
+      <div class="step"><div class="num">02</div><h3>AI genererer</h3><p>Titel, beskrivelse og prisforslag klar på sekunder, tilpasset dansk salgssprog.</p></div>
+      <div class="step"><div class="num">03</div><h3>Sæt prisen</h3><p>Én vare ad gangen på skærmen — bekræft eller justér, så videre til næste.</p></div>
+      <div class="step"><div class="num">04</div><h3>Kopiér & indsæt</h3><p>Separate knapper til titel og beskrivelse, klar til hvert felt på DBA og Vinted.</p></div>
+    </div>
+    <div class="note-strip">💡 Usikker på en vare? SnapSælg gætter ikke blindt på dyre design- eller mærkevarer — den beder dig bekræfte, og giver et ærligt prisinterval i stedet for et forkert tal.</div>
+  </div>
+</section>
+
+<section class="problem">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Hvorfor SnapSælg</span>
+      <h2>Bygget til Danmark, ikke oversat til Danmark</h2>
+    </div>
+    <div class="why-grid">
+      <div class="why-card"><h3><span class="dot"></span>Kender DBA</h3><p>De store internationale værktøjer springer EU over eller aldrig hørt om DBA. SnapSælg er bygget til danske platforme fra dag ét.</p></div>
+      <div class="why-card"><h3><span class="dot"></span>Din konto er sikker</h3><p>Vi poster aldrig automatisk på dine vegne. Du kopierer selv ind — det holder os inden for DBA's og Vinteds regler, hver gang.</p></div>
+      <div class="why-card"><h3><span class="dot"></span>Ærlig, ikke bare hurtig</h3><p>På dyre eller sjældne ting foreslår vi et prisinterval og peger dig hen, hvor du selv kan tjekke — i stedet for at gætte og skade dit salg.</p></div>
+      <div class="why-card"><h3><span class="dot"></span>Skalerer med dig</h3><p>Fra én engangsoprydning til en fast strøm af varer hver uge — samme værktøj, to måder at betale på.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="om">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Vores historie</span>
+      <h2>Hvorfor SnapSælg findes</h2>
+    </div>
+    <div class="about-grid">
+      <div>
+        <span class="draft-flag">Udkast — gør den til din egen</span>
+        <p>SnapSælg startede ikke som en forretningsplan. Det startede med min fars garage.</p>
+        <p>Han skulle sælge ud af en masse ting, og jeg så, hvor meget tid der gik med at fotografere, skrive og genskrive den samme slags annonce igen og igen — på DBA, på Facebook, på Vinted. Jeg er 21 og har kastet mig ud i en del forskellige projekter undervejs, med blandet held. Men det her var første gang, problemet var så konkret og så tydeligt mit eget, at jeg ikke kunne lade være med at bygge en løsning på det.</p>
+        <p>SnapSælg er resultatet: et lille, ærligt værktøj, der tager det kedelige arbejde fra dig, så du kan bruge tiden på det, der faktisk betyder noget.</p>
+        <p style="font-weight:700;">— Mark, grundlægger</p>
+      </div>
+      <div class="mission-box">
+        <span class="eyebrow">Vores mission</span>
+        <p>At gøre det hurtigt og trygt at sælge sine ting — uden at skulle blive ekspert i markedsføring, og uden at risikere den konto, du allerede har brugt år på at opbygge.</p>
+        <p style="margin-top:0.9rem;">Vi gætter ikke med skråsikkerhed, når vi er i tvivl. Vi siger det ærligt, og lader dig tage den endelige beslutning.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pris" class="pricing">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Pris</span>
+      <h2>To måder at bruge SnapSælg på</h2>
+      <p>Fordi oprydning er noget forskelligt for en privatperson og en professionel.</p>
+    </div>
+    <div class="price-grid">
+      <div class="price-card">
+        <span class="tag">Privat</span>
+        <h3>Oprydningspakke</h3>
+        <div class="amount">Engangsbeløb</div>
+        <ul>
+          <li>Op til 100 varer i én omgang</li>
+          <li>Ingen abonnement, ingen binding</li>
+          <li>Perfekt til flytning, arv eller forårsoprydning</li>
+        </ul>
+      </div>
+      <div class="price-card" style="border-color:var(--mint);">
+        <span class="tag">Reseller & dødsbofirma</span>
+        <h3>Abonnement</h3>
+        <div class="amount">99-149 kr <span>/ md</span></div>
+        <ul>
+          <li>Ubegrænset antal varer hver måned</li>
+          <li>Prioriteret ved nye funktioner</li>
+          <li>Til dig, for hvem oprydning er en fast forretning</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap" style="max-width:760px;">
+    <div class="section-head">
+      <span class="eyebrow">Spørgsmål</span>
+      <h2>Godt at vide</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span>Poster SnapSælg annoncerne automatisk for mig?</span><span class="plus">+</span></div>
+        <div class="faq-a">Nej, med vilje. Du kopierer selv titel og beskrivelse ind på DBA, Facebook eller Vinted. Det er lidt mere arbejde end "ét klik" — men det betyder også, at din konto aldrig er i risiko for at blive lukket for automatiseret aktivitet.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span>Hvor præcise er prisforslagene?</span><span class="plus">+</span></div>
+        <div class="faq-a">Rigtig gode på almindelige ting. På sjældne, dyre eller design-relaterede varer viser vi et interval i stedet for ét tal, og fortæller dig ærligt hvor du selv kan tjekke videre — vi gætter ikke, hvis vi er i tvivl.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span>Virker det kun til Danmark?</span><span class="plus">+</span></div>
+        <div class="faq-a">Vi starter i Danmark, hvor vi kender platformene og sproget bedst. Sverige, Norge og Finland er på vejen, med samme princip: lokale platforme, ikke en generisk oversættelse.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span>Hvad hvis jeg driver et dødsbo- eller flyttefirma?</span><span class="plus">+</span></div>
+        <div class="faq-a">Så er du præcis, hvem vi bygger til. Skriv til os — vi vil gerne høre, hvad der ville gøre SnapSælg til et fast værktøj i jeres arbejde.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="kontakt">
+  <div class="wrap" style="max-width:760px; text-align:center; margin-bottom:1.5rem;">
+    <span class="eyebrow">Kontakt os</span>
+    <h2 style="margin-top:0.7rem; font-size:clamp(1.5rem,2.6vw,2rem);">Skriv til os — vi svarer selv</h2>
+    <p style="color:var(--sub); margin-top:0.7rem;">Uanset om du rydder op derhjemme, sælger jævnligt, eller bare er nysgerrig — der sidder et rigtigt menneske i den anden ende af mailen.</p>
+  </div>
+  <div class="cta-final">
+    <h2>Klar til at rydde op uden at bruge en hel weekend på det?</h2>
+    <p>Skriv til os — private, resellere og dødsbofirmaer er alle velkomne, uanset hvor du er i processen.</p>
+    <a href="mailto:hej@snapsaelg.dk?subject=Jeg%20vil%20gerne%20h%C3%B8re%20mere%20om%20SnapS%C3%A6lg" class="btn btn-primary">hej@snapsaelg.dk</a>
+  </div>
+</section>
+
+<footer>
+  <div class="brand"><span class="brand-mark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></svg></span>SnapSælg</div>
+  <p>Lavet i Danmark. Bygget til Danmark. © 2026</p>
+  <div class="foot-links">
+    <a href="handelsbetingelser.html">Handelsbetingelser</a>
+    <a href="mailto:hej@snapsaelg.dk">Kontakt</a>
+  </div>
+</footer>
+
+</body>
+</html>
