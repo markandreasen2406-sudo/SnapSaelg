@@ -1,40 +1,38 @@
 // netlify/functions/generate.js
 //
 // Runs on Netlify's servers, never in the visitor's browser.
-// Reads the real API key from Netlify's environment variables (set in the dashboard,
-// never written here), and forwards the request app.html sends to Anthropic.
+// Uses the Anthropic API key that Netlify's AI Gateway injects automatically,
+// and forwards the request app.html sends to Anthropic.
 
-exports.handler = async (event) => {
-  if (event.httpMethod !== "POST") {
-    return {
-      statusCode: 405,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ error: "Denne endpoint accepterer kun POST" }),
-    };
+export default async (req) => {
+  if (req.method !== "POST") {
+    return new Response(
+      JSON.stringify({ error: "Denne endpoint accepterer kun POST" }),
+      { status: 405, headers: { "Content-Type": "application/json" } }
+    );
   }
 
   let body;
   try {
-    body = JSON.parse(event.body);
+    body = await req.json();
   } catch (e) {
-    return {
-      statusCode: 400,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ error: "Ugyldig JSON i request" }),
-    };
+    return new Response(
+      JSON.stringify({ error: "Ugyldig JSON i request" }),
+      { status: 400, headers: { "Content-Type": "application/json" } }
+    );
   }
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
+  const baseUrl = process.env.ANTHROPIC_BASE_URL || "https://api.anthropic.com";
   if (!apiKey) {
-    return {
-      statusCode: 500,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ error: "ANTHROPIC_API_KEY er ikke sat op i Netlify endnu." }),
-    };
+    return new Response(
+      JSON.stringify({ error: "ANTHROPIC_API_KEY er ikke sat op i Netlify endnu." }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
   }
 
   try {
-    const anthropicResponse = await fetch("https://api.anthropic.com/v1/messages", {
+    const anthropicResponse = await fetch(`${baseUrl}/v1/messages`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -44,16 +42,14 @@ exports.handler = async (event) => {
       body: JSON.stringify(body),
     });
     const data = await anthropicResponse.text();
-    return {
-      statusCode: anthropicResponse.status,
+    return new Response(data, {
+      status: anthropicResponse.status,
       headers: { "Content-Type": "application/json" },
-      body: data,
-    };
+    });
   } catch (err) {
-    return {
-      statusCode: 502,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ error: "Kunne ikke nå Anthropic API: " + err.message }),
-    };
+    return new Response(
+      JSON.stringify({ error: "Kunne ikke nå Anthropic API: " + err.message }),
+      { status: 502, headers: { "Content-Type": "application/json" } }
+    );
   }
 };

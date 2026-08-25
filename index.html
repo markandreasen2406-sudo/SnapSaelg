@@ -154,6 +154,37 @@
   .ydelse-item .icon-circle{flex-shrink:0; width:42px; height:42px; margin-bottom:0;}
   .ydelse-item h3{font-size:1.02rem; margin-bottom:0.35rem;}
   .ydelse-item p{color:var(--sub); font-size:0.9rem;}
+
+  /* SHOWCASE */
+  .showcase-row{display:flex; align-items:center; justify-content:center; gap:1.8rem; flex-wrap:wrap;}
+  .showcase-col{display:flex; flex-direction:column; align-items:center;}
+  .showcase-label{margin-top:1rem; font-size:0.85rem; font-weight:700; color:var(--teal); background:var(--tint); border-radius:999px; padding:0.35rem 0.9rem;}
+  .showcase-arrow{font-size:1.8rem; color:var(--border); flex-shrink:0;}
+  @media (max-width:760px){ .showcase-arrow{transform:rotate(90deg);} }
+  .mini-phone{width:230px; background:var(--dark); border-radius:26px; padding:11px; box-shadow:0 20px 40px -16px rgba(1,60,68,0.35);}
+  .mini-screen{background:var(--paper); border-radius:16px; overflow:hidden; padding:0.9rem; min-height:230px; display:flex; flex-direction:column; justify-content:center;}
+  .mini-upload{border:2px dashed var(--border); border-radius:12px; padding:1.6rem 0.8rem; text-align:center; background:var(--tint);}
+  .mini-upload .su-title{font-size:0.8rem; font-weight:700; color:var(--ink); margin-top:0.6rem;}
+  .mini-upload .su-sub{font-size:0.68rem; color:var(--sub); margin-top:0.25rem; line-height:1.4;}
+
+  /* SIGNUP */
+  .signup-section{background:var(--dark); text-align:center;}
+  .signup-section .eyebrow{color:var(--mint); justify-content:center;}
+  .signup-section h2{color:#fff; font-size:clamp(1.5rem,2.8vw,2.1rem); margin-top:0.8rem;}
+  .signup-section p{color:#9FC4C1; margin-top:0.7rem;}
+  .signup-form{display:flex; gap:0.7rem; max-width:420px; margin:1.8rem auto 0; flex-wrap:wrap; justify-content:center;}
+  .signup-form input[type="email"]{flex:1; min-width:200px; padding:0.85rem 1.1rem; border-radius:999px; border:1.5px solid rgba(255,255,255,0.25); background:rgba(255,255,255,0.08); color:#fff; font-size:0.95rem;}
+  .signup-form input[type="email"]::placeholder{color:#9FC4C1;}
+  .signup-form button{background:var(--mint); color:var(--dark); border:none;}
+  .signup-note{color:#7FA9A5; font-size:0.78rem; margin-top:0.9rem;}
+  .signup-success{display:none; color:var(--mint); font-weight:700; margin-top:1.8rem; font-size:1.05rem;}
+
+  /* LIVE EMBED */
+  .live-frame{max-width:520px; margin:0 auto; background:var(--dark); border-radius:34px; padding:14px; box-shadow:0 30px 60px -20px rgba(1,60,68,0.45);}
+  .live-frame iframe{width:100%; height:780px; border:none; border-radius:22px; background:var(--paper); display:block;}
+  .live-badge{display:inline-flex; align-items:center; gap:0.4rem; font-size:0.78rem; font-weight:700; color:var(--mint); background:rgba(2,195,154,0.1); border:1px solid rgba(2,195,154,0.3); border-radius:999px; padding:0.3rem 0.8rem; margin-bottom:1.2rem;}
+  .live-badge::before{content:""; width:7px; height:7px; border-radius:50%; background:var(--mint); animation:pulse 1.6s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:0.35;}}
 </style>
 </head>
 <body>
@@ -170,7 +201,7 @@
       <a href="#om">Vores historie</a>
       <a href="#faq">Spørgsmål</a>
     </div>
-    <a href="#kontakt" class="btn btn-primary" style="padding:0.6rem 1.3rem; font-size:0.85rem;">Kom i gang</a>
+    <a href="app.html" class="btn btn-primary" style="padding:0.6rem 1.3rem; font-size:0.85rem;">Prøv appen →</a>
   </nav>
 </header>
 
@@ -181,7 +212,7 @@
       <h1>Fra rodet reol til <em>salgsklar annonce</em> på under et minut</h1>
       <p class="lede">Fotografér dine ting. SnapSælg genererer titel, beskrivelse og prisforslag automatisk — klar til at indsætte direkte på DBA, Facebook og Vinted.</p>
       <div class="ctas">
-        <a href="#kontakt" class="btn btn-primary">Bliv tidlig bruger</a>
+        <a href="app.html" class="btn btn-primary">Prøv appen nu →</a>
         <a href="#saadan" class="btn btn-ghost">Se hvordan det virker ↓</a>
       </div>
     </div>
@@ -201,6 +232,8 @@
     </div>
   </div>
 </section>
+
+<!-- Kundeklub-tilmelding sat på pause — kan tilføjes igen senere, koden er gemt i tidligere version af siden -->
 
 <section class="problem" id="hvem">
   <div class="wrap">
@@ -261,6 +294,47 @@
   </div>
 </section>
 
+<section id="se-det">
+  <div class="wrap" style="text-align:center;">
+    <div class="section-head" style="text-align:center; margin:0 auto 2.5rem;">
+      <span class="eyebrow">Se SnapSælg i aktion</span>
+      <h2>Fra billede til salgsklar annonce</h2>
+      <p>Sådan ser det faktisk ud, når du bruger værktøjet.</p>
+    </div>
+    <div class="showcase-row">
+      <div class="showcase-col">
+        <div class="mini-phone">
+          <div class="mini-screen">
+            <div class="mini-upload">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#5C7377" stroke-width="1.6" style="margin:0 auto; display:block;"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></svg>
+              <div class="su-title">Tryk for at vælge billeder</div>
+              <div class="su-sub">Ét billede per vare, op til 15 ad gangen</div>
+            </div>
+          </div>
+        </div>
+        <span class="showcase-label">1. Upload</span>
+      </div>
+      <div class="showcase-arrow">→</div>
+      <div class="showcase-col">
+        <div class="mini-phone">
+          <div class="mini-screen" style="background:var(--dark); padding:1rem;">
+            <div style="color:#8FC7C4; font-size:0.62rem; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:0.3rem;">Titel</div>
+            <div style="color:#fff; font-family:Cambria,serif; font-weight:700; font-size:0.9rem; margin-bottom:0.7rem;">Retro pladespiller, virker fint</div>
+            <div style="color:#8FC7C4; font-size:0.62rem; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:0.3rem;">Beskrivelse</div>
+            <div style="color:#D7ECEA; font-size:0.72rem; line-height:1.45; margin-bottom:0.7rem;">Velholdt pladespiller med varm lyd — perfekt til stuen. Sælges pga. flytning.</div>
+            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.08); border-radius:8px; padding:0.5rem 0.7rem;">
+              <span style="font-size:0.68rem; color:#9FC4C1;">Prisforslag</span>
+              <b style="color:var(--mint); font-family:Cambria,serif; font-size:1rem;">450 kr</b>
+            </div>
+          </div>
+        </div>
+        <span class="showcase-label">2. Klar til kopiering</span>
+      </div>
+    </div>
+    <a href="app.html" class="btn btn-primary" style="margin-top:2.5rem;">Prøv den rigtige app nu →</a>
+  </div>
+</section>
+
 <section id="saadan">
   <div class="wrap">
     <div class="section-head">
@@ -301,9 +375,8 @@
     </div>
     <div class="about-grid">
       <div>
-        <span class="draft-flag">:
-    </span>
-                <p>SnapSælg startede ikke som en forretningsplan. Det startede med en bunke ting, jeg selv skulle af med.</p>
+        <span class="draft-flag">Udkast — gør den til din egen</span>
+        <p>SnapSælg startede ikke som en forretningsplan. Det startede med en bunke ting, jeg selv skulle af med.</p>
         <p>Jeg opdagede, hvor meget tid der gik med at fotografere, skrive og genskrive den samme slags annonce igen og igen — på DBA, på Facebook, på Vinted. Jeg har kastet mig ud i en del forskellige projekter undervejs, med blandet held. Men det her var første gang, problemet var så konkret og så tydeligt mit eget, at jeg ikke kunne lade være med at bygge en løsning på det.</p>
         <p>SnapSælg er resultatet: et lille, ærligt værktøj, der tager det kedelige arbejde fra dig, så du kan bruge tiden på det, der faktisk betyder noget.</p>
         <p style="font-weight:700;">— Grundlæggeren bag SnapSælg</p>
@@ -380,8 +453,7 @@
   <div class="wrap" style="max-width:760px; text-align:center; margin-bottom:1.5rem;">
     <span class="eyebrow">Kontakt os</span>
     <h2 style="margin-top:0.7rem; font-size:clamp(1.5rem,2.6vw,2rem);">Skriv til os — vi svarer selv</h2>
-    <p style="color:var(--sub); margin-top:0.7rem;">-
-          En support der altid svarer indenfor 24 timer.</p>
+    <p style="color:var(--sub); margin-top:0.7rem;">Uanset om du rydder op derhjemme, sælger jævnligt, eller bare er nysgerrig — der sidder et rigtigt menneske i den anden ende af mailen.</p>
   </div>
   <div class="cta-final">
     <h2>Klar til at rydde op uden at bruge en hel weekend på det?</h2>
@@ -398,6 +470,27 @@
     <a href="mailto:hej@snapsaelg.dk">Kontakt</a>
   </div>
 </footer>
+
+<script>
+  var kundeklubForm = document.getElementById('kundeklubForm');
+  if (kundeklubForm) {
+    kundeklubForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var form = e.target;
+      var data = new FormData(form);
+      fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(data).toString()
+      }).then(function () {
+        form.style.display = 'none';
+        document.getElementById('kundeklubSuccess').style.display = 'block';
+      }).catch(function () {
+        alert('Noget gik galt — prøv igen, eller skriv til hej@snapsaelg.dk');
+      });
+    });
+  }
+</script>
 
 </body>
 </html>
