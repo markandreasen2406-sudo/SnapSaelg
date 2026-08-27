@@ -6,7 +6,7 @@
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></svg>
     </div>
     <h1 style="font-family:Cambria, Georgia, serif; font-size:1.5rem; font-weight:700; margin:0;">SnapSælg — test</h1>
-    <p id="headerSub" style="color:var(--sub); font-size:0.9rem; margin:0.35rem 0 0;">Upload op til 15 billeder af din fars ting. Gennemgå dem én ad gangen, kopiér titel og beskrivelse hver for sig.</p>
+    <p id="headerSub" style="color:var(--sub); font-size:0.9rem; margin:0.35rem 0 0;">Upload op til 15 billeder. Gennemgå dem én ad gangen, kopiér titel og beskrivelse hver for sig.</p>
     <span id="creditsBadge" style="display:none; margin-top:0.6rem; font-size:0.75rem; font-weight:700; color:var(--teal); background:var(--tint); border-radius:999px; padding:0.3rem 0.8rem;"></span>
   </div>
 
@@ -44,9 +44,12 @@
   <!-- STEP 2: queue preview -->
   <div id="queueStep" style="display:none;">
     <div id="thumbGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(72px, 1fr)); gap:0.5rem; margin-bottom:1rem;"></div>
-    <button id="generateAllBtn" style="width:100%; padding:0.85rem; border:none; border-radius:10px; background:var(--teal); color:#fff; font-size:1rem; font-weight:600; cursor:pointer;"></button>
+    <div id="turnstileBox" style="display:flex; justify-content:center; margin-bottom:1rem;"></div>
+    <button id="generateAllBtn" disabled style="width:100%; padding:0.85rem; border:none; border-radius:10px; background:var(--teal); color:#fff; font-size:1rem; font-weight:600; cursor:pointer; opacity:0.5;"></button>
     <button id="resetBtn" style="width:100%; margin-top:0.5rem; padding:0.6rem; border:1px solid var(--border); border-radius:10px; background:transparent; color:var(--sub); font-size:0.85rem; cursor:pointer;">Start forfra</button>
   </div>
+
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
   <!-- STEP 3: processing -->
   <div id="processingStep" style="display:none; text-align:center; padding:2rem 0;">
@@ -194,6 +197,7 @@ fileInput.addEventListener('change', async (e) => {
   showQueue();
 });
 
+let turnstileToken = null;
 function showQueue() {
   uploadStep.style.display = 'none';
   queueStep.style.display = 'block';
@@ -201,6 +205,25 @@ function showQueue() {
     `<img src="${it.previewUrl}" style="width:100%; aspect-ratio:1; object-fit:cover; border-radius:8px; border:1px solid var(--border);">`
   ).join('');
   generateAllBtn.textContent = `Generér ${items.length} annonce${items.length > 1 ? 'r' : ''}`;
+  turnstileToken = null;
+  generateAllBtn.disabled = true;
+  generateAllBtn.style.opacity = '0.5';
+  document.getElementById('turnstileBox').innerHTML = '';
+  if (window.turnstile) {
+    window.turnstile.render('#turnstileBox', {
+      sitekey: 'TURNSTILE_SITE_KEY',
+      callback: function (token) {
+        turnstileToken = token;
+        generateAllBtn.disabled = false;
+        generateAllBtn.style.opacity = '1';
+      },
+      'expired-callback': function () {
+        turnstileToken = null;
+        generateAllBtn.disabled = true;
+        generateAllBtn.style.opacity = '0.5';
+      }
+    });
+  }
 }
 
 document.getElementById('resetBtn').addEventListener('click', resetAll);
@@ -209,7 +232,7 @@ function resetAll() {
   items = []; currentIndex = 0; fileInput.value = '';
   queueStep.style.display = 'none';
   reviewStep.style.display = 'none';
-  headerSub.textContent = "Upload op til 15 billeder af din fars ting. Gennemgå dem én ad gangen, kopiér titel og beskrivelse hver for sig.";
+  headerSub.textContent = "Upload op til 15 billeder. Gennemgå dem én ad gangen, kopiér titel og beskrivelse hver for sig.";
   refreshGate();
 }
 
@@ -264,6 +287,7 @@ generateAllBtn.addEventListener('click', async () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          turnstile_token: turnstileToken,
           model: "claude-sonnet-4-6",
           max_tokens: 1000,
           messages: [{
@@ -399,6 +423,7 @@ async function refineItem(index) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
+        turnstile_token: turnstileToken,
         model: "claude-sonnet-4-6",
         max_tokens: 800,
         messages: [{
