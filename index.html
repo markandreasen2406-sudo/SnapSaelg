@@ -185,6 +185,25 @@
   .feedback-detail textarea::placeholder{color:var(--sub);}
   .feedback-detail .btn{width:100%;}
   .feedback-success{display:none; color:var(--mint); font-weight:700; margin-top:1.4rem;}
+
+  /* SIGNUP */
+  .signup-section{background:var(--dark); text-align:center;}
+  .signup-section .eyebrow{color:var(--mint); justify-content:center;}
+  .signup-section h2{color:#fff; font-size:clamp(1.5rem,2.8vw,2.1rem); margin-top:0.8rem;}
+  .signup-section p{color:var(--sub); margin-top:0.7rem;}
+  .signup-form{display:flex; gap:0.7rem; max-width:420px; margin:1.8rem auto 0; flex-wrap:wrap; justify-content:center;}
+  .signup-form input[type="email"]{flex:1; min-width:200px; padding:0.85rem 1.1rem; border-radius:999px; border:1.5px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.06); color:var(--ink); font-size:0.95rem;}
+  .signup-form input[type="email"]::placeholder{color:var(--sub);}
+  .signup-form button{background:var(--mint); color:#04191C; border:none;}
+  .signup-note{color:var(--sub); font-size:0.78rem; margin-top:0.9rem;}
+  .signup-success{display:none; color:var(--mint); font-weight:700; margin-top:1.8rem; font-size:1.05rem;}
+
+  /* LIVE EMBED */
+  .live-frame{max-width:520px; margin:2.5rem auto 0; background:var(--dark); border-radius:34px; padding:14px; box-shadow:0 30px 70px -20px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.06);}
+  .live-frame iframe{width:100%; height:760px; border:none; border-radius:22px; background:var(--screen); display:block;}
+  .live-badge{display:inline-flex; align-items:center; gap:0.4rem; font-size:0.78rem; font-weight:700; color:var(--mint); background:rgba(2,230,184,0.1); border:1px solid rgba(2,230,184,0.3); border-radius:999px; padding:0.3rem 0.8rem; margin:2.5rem 0 0;}
+  .live-badge::before{content:""; width:7px; height:7px; border-radius:50%; background:var(--mint); animation:pulse 1.6s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:0.3;}}
 </style>
 </head>
 <body>
@@ -201,7 +220,7 @@
       <a href="#om">Vores historie</a>
       <a href="#faq">Spørgsmål</a>
     </div>
-    <a href="app.html" class="btn btn-primary" style="padding:0.6rem 1.3rem; font-size:0.85rem;">Prøv Grats Nu →</a>
+    <a href="app.html" class="btn btn-primary" style="padding:0.6rem 1.3rem; font-size:0.85rem;">Prøv SnapSælg →</a>
   </nav>
 </header>
 
@@ -212,7 +231,7 @@
       <h1>Fra rodet reol til <em>salgsklar annonce</em> på under et minut</h1>
       <p class="lede">Fotografér dine ting. SnapSælg genererer titel, beskrivelse og prisforslag automatisk — klar til at indsætte direkte på DBA, Facebook og Vinted.</p>
       <div class="ctas">
-        <a href="app.html" class="btn btn-primary">Prøv appen nu →</a>
+        <a href="app.html" class="btn btn-primary">Prøv SnapSælg nu →</a>
         <a href="#saadan" class="btn btn-ghost">Se hvordan det virker ↓</a>
       </div>
     </div>
@@ -230,6 +249,25 @@
         <span class="mock-tag t2">✓ Pris foreslået</span>
       </div>
     </div>
+  </div>
+</section>
+
+<section class="signup-section">
+  <div class="wrap" style="max-width:600px;">
+    <span class="eyebrow">Kundeklub</span>
+    <h2>Tilmeld dig og få 5 gratis credits</h2>
+    <p>Ingen binding, intet kreditkort — bare din mail.</p>
+    <form id="kundeklubForm" name="kundeklub" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="signup-form">
+      <input type="hidden" name="form-name" value="kundeklub">
+      <p style="position:absolute; left:-9999px;"><label>Udfyld ikke dette felt: <input name="bot-field"></label></p>
+      <input type="email" name="email" required placeholder="din@email.dk">
+      <button type="submit" class="btn">Få 5 gratis credits</button>
+    </form>
+    <div id="kundeklubSuccess" class="signup-success">
+      <div>Tak! Du har nu 5 gratis credits.</div>
+      <a href="app.html" class="btn" style="background:var(--mint); color:#04191C; margin-top:1rem; display:inline-flex;">Åbn SnapSælg og prøv dit første billede →</a>
+    </div>
+    <p class="signup-note">Du kan altid afmelde dig igen. Vi sender ikke spam.</p>
   </div>
 </section>
 
@@ -265,7 +303,7 @@
     <div class="section-head">
       <span class="eyebrow">Vores ydelse</span>
       <h2>Det, du konkret får</h2>
-      <p>Ikke bare "en app" — her er nøjagtig, hvad SnapSælg leverer, hver gang du bruger den.</p>
+      <p>Ikke bare "endnu et værktøj" — her er nøjagtig, hvad SnapSælg leverer, hver gang du bruger den.</p>
     </div>
     <div class="ydelse-list">
       <div class="ydelse-item">
@@ -329,7 +367,14 @@
         <span class="showcase-label">2. Klar til kopiering</span>
       </div>
     </div>
-    <a href="app.html" class="btn btn-primary" style="margin-top:2.5rem;">Prøv den rigtige app nu →</a>
+    <a href="app.html" class="btn btn-primary" style="margin-top:2.5rem;">Prøv det rigtige værktøj nu →</a>
+
+    <div>
+      <span class="live-badge">Live — prøv den direkte herunder</span>
+    </div>
+    <div class="live-frame">
+      <iframe src="app.html" title="SnapSælg — prøv værktøjet"></iframe>
+    </div>
   </div>
 </section>
 
@@ -491,6 +536,29 @@
     <a href="mailto:hej@snapsaelg.dk">Kontakt</a>
   </div>
 </footer>
+
+<script>
+  var kundeklubForm = document.getElementById('kundeklubForm');
+  if (kundeklubForm) {
+    kundeklubForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var form = e.target;
+      var data = new FormData(form);
+      fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(data).toString()
+      }).then(function () {
+        localStorage.setItem('snapsaelg_credits', '5');
+        localStorage.setItem('snapsaelg_signedup', 'true');
+        form.style.display = 'none';
+        document.getElementById('kundeklubSuccess').style.display = 'block';
+      }).catch(function () {
+        alert('Noget gik galt — prøv igen, eller skriv til hej@snapsaelg.dk');
+      });
+    });
+  }
+</script>
 
 <script>
   var openBtn = document.getElementById('openFeedback');

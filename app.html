@@ -7,6 +7,27 @@
     </div>
     <h1 style="font-family:Cambria, Georgia, serif; font-size:1.5rem; font-weight:700; margin:0;">SnapSælg — test</h1>
     <p id="headerSub" style="color:var(--sub); font-size:0.9rem; margin:0.35rem 0 0;">Upload op til 15 billeder af din fars ting. Gennemgå dem én ad gangen, kopiér titel og beskrivelse hver for sig.</p>
+    <span id="creditsBadge" style="display:none; margin-top:0.6rem; font-size:0.75rem; font-weight:700; color:var(--teal); background:var(--tint); border-radius:999px; padding:0.3rem 0.8rem;"></span>
+  </div>
+
+  <!-- CREDIT GATE -->
+  <div id="creditGate" style="display:none;">
+    <div id="gateSignupState" style="border:2px solid var(--mint); border-radius:12px; padding:2rem 1.2rem; text-align:center; background:var(--tint);">
+      <div style="font-size:1.6rem; margin-bottom:0.5rem;">🔒</div>
+      <div style="font-weight:700; font-size:1rem; margin-bottom:0.4rem; color:var(--ink);">Tilmeld dig for at komme i gang</div>
+      <div style="font-size:0.85rem; color:var(--sub); margin-bottom:1.2rem;">Gratis, ingen kreditkort — få 5 credits med det samme.</div>
+      <form id="gateForm" name="kundeklub" method="POST" data-netlify="true" netlify-honeypot="bot-field" style="display:flex; flex-direction:column; gap:0.6rem;">
+        <input type="hidden" name="form-name" value="kundeklub">
+        <p style="position:absolute; left:-9999px;"><label>Udfyld ikke dette felt: <input name="bot-field"></label></p>
+        <input type="email" name="email" required placeholder="din@email.dk" style="padding:0.7rem 1rem; border-radius:999px; border:1.5px solid var(--border); font-size:0.9rem;">
+        <button type="submit" style="padding:0.7rem; border-radius:999px; background:var(--teal); color:#fff; border:none; font-weight:700; cursor:pointer;">Få 5 gratis credits</button>
+      </form>
+    </div>
+    <div id="gateUpgradeState" style="display:none; border:2px solid var(--teal); border-radius:12px; padding:2rem 1.2rem; text-align:center; background:var(--tint);">
+      <div style="font-size:1.6rem; margin-bottom:0.5rem;">✨</div>
+      <div style="font-weight:700; font-size:1rem; margin-bottom:0.4rem; color:var(--ink);">Du har brugt dine 5 gratis credits</div>
+      <div style="font-size:0.85rem; color:var(--sub);">Skriv til <a href="mailto:hej@snapsaelg.dk" style="color:var(--teal);">hej@snapsaelg.dk</a> for at høre om et abonnement.</div>
+    </div>
   </div>
 
   <!-- STEP 1: upload -->
@@ -67,6 +88,58 @@ const headerSub = document.getElementById('headerSub');
 
 uploadZone.addEventListener('click', () => fileInput.click());
 
+function getCredits() {
+  const v = localStorage.getItem('snapsaelg_credits');
+  return v === null ? 0 : parseInt(v, 10);
+}
+function isSignedUp() {
+  return localStorage.getItem('snapsaelg_signedup') === 'true';
+}
+function spendCredit() {
+  const c = Math.max(0, getCredits() - 1);
+  localStorage.setItem('snapsaelg_credits', String(c));
+  return c;
+}
+function refreshGate() {
+  const credits = getCredits();
+  const gate = document.getElementById('creditGate');
+  const badge = document.getElementById('creditsBadge');
+  if (credits > 0) {
+    gate.style.display = 'none';
+    uploadStep.style.display = 'block';
+    badge.style.display = 'inline-block';
+    badge.textContent = credits + (credits === 1 ? ' credit tilbage' : ' credits tilbage');
+    return true;
+  }
+  uploadStep.style.display = 'none';
+  gate.style.display = 'block';
+  badge.style.display = 'none';
+  document.getElementById('gateSignupState').style.display = isSignedUp() ? 'none' : 'block';
+  document.getElementById('gateUpgradeState').style.display = isSignedUp() ? 'block' : 'none';
+  return false;
+}
+
+const gateForm = document.getElementById('gateForm');
+if (gateForm) {
+  gateForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const data = new FormData(gateForm);
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(data).toString()
+    }).then(() => {
+      localStorage.setItem('snapsaelg_credits', '5');
+      localStorage.setItem('snapsaelg_signedup', 'true');
+      refreshGate();
+    }).catch(() => {
+      alert('Noget gik galt — prøv igen, eller skriv til hej@snapsaelg.dk');
+    });
+  });
+}
+
+refreshGate();
+
 function resizeImage(file, maxDim = 1568, quality = 0.85) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -121,10 +194,10 @@ document.getElementById('resetBtn').addEventListener('click', resetAll);
 document.getElementById('resetBtn2').addEventListener('click', resetAll);
 function resetAll() {
   items = []; currentIndex = 0; fileInput.value = '';
-  uploadStep.style.display = 'block';
   queueStep.style.display = 'none';
   reviewStep.style.display = 'none';
   headerSub.textContent = "Upload op til 15 billeder af din fars ting. Gennemgå dem én ad gangen, kopiér titel og beskrivelse hver for sig.";
+  refreshGate();
 }
 
 const CONDITIONS = ["Ny", "Som ny", "Brugt, pæn stand", "Brugt, slidt", "Defekt / til reservedele"];
@@ -195,6 +268,14 @@ generateAllBtn.addEventListener('click', async () => {
       const clean = text.replace(/```json|```/g, '').trim();
       items[i].result = JSON.parse(clean);
       items[i].status = 'done';
+      const remaining = spendCredit();
+      if (remaining <= 0 && i < items.length - 1) {
+        for (let j = i + 1; j < items.length; j++) {
+          items[j].status = 'error';
+          items[j].error = 'Ingen credits tilbage — tilmeld dig for flere';
+        }
+        break;
+      }
     } catch (err) {
       items[i].status = 'error';
       items[i].error = err.message;
@@ -205,6 +286,10 @@ generateAllBtn.addEventListener('click', async () => {
   processingStep.style.display = 'none';
   reviewStep.style.display = 'block';
   headerSub.textContent = "Gennemgå hver vare, kopiér titel og beskrivelse hver for sig ind i DBA/Facebook/Vinted.";
+  const badge = document.getElementById('creditsBadge');
+  const c = getCredits();
+  if (c > 0) { badge.textContent = c + (c === 1 ? ' credit tilbage' : ' credits tilbage'); }
+  else { badge.style.display = 'none'; }
   renderCard();
 });
 
