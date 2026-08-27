@@ -1,607 +1,440 @@
-<!DOCTYPE html>
-<html lang="da">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SnapSælg — Fra rodet reol til salgsklar annonce</title>
-<style>
-  :root{
-    --teal:#04A8BC; --seafoam:#00C6AC; --mint:#02E6B8;
-    --dark:#02151A; --bg:#0A2226; --card:#123338;
-    --ink:#F3FAF9; --sub:#93B0AC; --border:rgba(255,255,255,0.12);
-    --warn:#F0857D; --screen:#FCFEFD;
-  }
-  *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
-  body{
-    margin:0; background:var(--bg); color:var(--ink);
-    font-family:'Calibri','Segoe UI',Arial,sans-serif; line-height:1.55;
-    -webkit-font-smoothing:antialiased;
-  }
-  h1,h2,h3{font-family:Cambria,Georgia,'Times New Roman',serif; font-weight:700; margin:0; color:var(--ink);}
-  p{margin:0;}
-  a{color:inherit;}
-  .wrap{max-width:1120px; margin:0 auto; padding:0 1.5rem;}
-  .eyebrow{
-    display:inline-flex; align-items:center; gap:0.5rem; font-size:0.78rem;
-    letter-spacing:0.08em; text-transform:uppercase; font-weight:700; color:var(--seafoam);
-  }
-  .eyebrow::before{content:""; width:8px; height:8px; border-radius:50%; background:var(--mint);}
-  .btn{
-    display:inline-flex; align-items:center; justify-content:center; gap:0.5rem;
-    padding:0.85rem 1.6rem; border-radius:999px; font-size:0.95rem; font-weight:700;
-    text-decoration:none; cursor:pointer; border:none; transition:transform .15s, box-shadow .15s;
-  }
-  .btn:hover{transform:translateY(-1px);}
-  .btn-primary{background:var(--mint); color:#04191C; box-shadow:0 8px 24px rgba(2,230,184,0.25);}
-  .btn-ghost{background:transparent; color:var(--ink); border:1.5px solid rgba(255,255,255,0.22);}
+<div style="--teal:#028090; --seafoam:#00A896; --mint:#02C39A; --dark:#013C44; --ink:#163238; --sub:#5C7377; --tint:#EAF5F4; --border:#D3E7E5; --warn:#B0413E;
+  font-family: Calibri, 'Segoe UI', Arial, sans-serif; color: var(--ink); max-width: 640px; margin: 0 auto; padding: 1.5rem 1rem;">
 
-  /* NAV */
-  header{position:sticky; top:0; z-index:20; background:rgba(10,34,38,0.85); backdrop-filter:blur(8px); border-bottom:1px solid var(--border);}
-  nav{display:flex; align-items:center; justify-content:space-between; padding:1rem 1.5rem; max-width:1120px; margin:0 auto;}
-  .brand{display:flex; align-items:center; gap:0.55rem; font-family:Cambria,Georgia,serif; font-weight:700; font-size:1.25rem; color:var(--ink); text-decoration:none;}
-  .brand-mark{width:34px; height:34px; border-radius:10px; background:var(--teal); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
-  nav .links{display:flex; gap:1.8rem; font-size:0.92rem; font-weight:600; color:var(--sub);}
-  nav .links a{text-decoration:none;}
-  nav .links a:hover{color:var(--seafoam);}
-  @media (max-width:760px){ nav .links{display:none;} }
-
-  /* HERO */
-  .hero{padding:4.5rem 0 5rem; overflow:hidden; position:relative;}
-  .hero-grid{display:grid; grid-template-columns:1.05fr 0.95fr; gap:3rem; align-items:center;}
-  @media (max-width:900px){ .hero-grid{grid-template-columns:1fr;} }
-  .hero h1{font-size:clamp(2.3rem, 4.6vw, 3.5rem); line-height:1.08; letter-spacing:-0.01em; margin:1rem 0 1.3rem;}
-  .hero h1 em{font-style:normal; color:var(--seafoam); border-bottom:4px solid var(--mint); padding-bottom:2px;}
-  .hero p.lede{font-size:1.15rem; color:var(--sub); max-width:34rem; margin-bottom:2rem;}
-  .hero .ctas{display:flex; gap:0.9rem; flex-wrap:wrap;}
-  .hero-visual{position:relative;}
-  .phone{
-    width:min(300px, 100%); margin:0 auto; background:var(--dark); border-radius:34px;
-    padding:14px; box-shadow:0 30px 70px -20px rgba(0,0,0,0.55); position:relative;
-    border:1px solid rgba(255,255,255,0.06);
-  }
-  .phone-screen{background:var(--screen); border-radius:22px; overflow:hidden; padding:1.1rem;}
-  .mock-photo{background:linear-gradient(135deg,#DCEEEC,#C7E3E0); border-radius:12px; height:120px; display:flex; align-items:center; justify-content:center; margin-bottom:0.9rem;}
-  .mock-tag{position:absolute; background:var(--mint); color:#04191C; font-size:0.68rem; font-weight:700; padding:0.3rem 0.6rem; border-radius:999px; box-shadow:0 8px 16px rgba(2,230,184,0.35);}
-  .mock-tag.t1{top:38%; left:-8%;}
-  .mock-tag.t2{top:60%; right:-10%;}
-  .mock-title{font-family:Cambria,serif; font-weight:700; font-size:0.92rem; margin-bottom:0.4rem; color:#132B30;}
-  .mock-desc{font-size:0.72rem; color:#5C7377; margin-bottom:0.8rem; line-height:1.4;}
-  .mock-price{display:flex; justify-content:space-between; align-items:center; background:#EAF5F4; border-radius:8px; padding:0.5rem 0.7rem;}
-  .mock-price span{color:#5C7377;}
-  .mock-price b{font-family:Cambria,serif; color:var(--teal); font-size:1.05rem;}
-
-  section{padding:5rem 0;}
-  .section-head{max-width:38rem; margin-bottom:3rem;}
-  .section-head h2{font-size:clamp(1.7rem,3vw,2.3rem); margin-top:0.7rem;}
-  .section-head p{color:var(--sub); font-size:1.05rem; margin-top:0.8rem;}
-
-  /* PROBLEM */
-  .problem{background:var(--card);}
-  .audience-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem;}
-  @media (max-width:800px){ .audience-grid{grid-template-columns:1fr;} }
-  .card{background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:16px; padding:1.8rem;}
-  .icon-circle{width:48px; height:48px; border-radius:12px; background:var(--teal); display:flex; align-items:center; justify-content:center; margin-bottom:1.1rem;}
-  .card h3{font-size:1.1rem; margin-bottom:0.6rem;}
-  .card p{color:var(--sub); font-size:0.92rem;}
-
-  /* HOW IT WORKS */
-  .steps{display:grid; grid-template-columns:repeat(4,1fr); gap:1.3rem; counter-reset:step;}
-  @media (max-width:900px){ .steps{grid-template-columns:1fr 1fr;} }
-  @media (max-width:520px){ .steps{grid-template-columns:1fr;} }
-  .step{position:relative; padding-top:0.5rem;}
-  .step .num{font-family:Cambria,serif; font-size:2.1rem; font-weight:700; color:rgba(255,255,255,0.14); line-height:1;}
-  .step h3{font-size:1.05rem; margin:0.6rem 0 0.5rem;}
-  .step p{color:var(--sub); font-size:0.9rem;}
-  .note-strip{margin-top:2.5rem; padding:1rem 1.3rem; border-left:3px solid var(--mint); background:var(--card); border-radius:0 10px 10px 0; font-size:0.9rem; color:var(--ink);}
-
-  /* WHY */
-  .why-grid{display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;}
-  @media (max-width:760px){ .why-grid{grid-template-columns:1fr;} }
-  .why-card{background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:16px; padding:1.8rem;}
-  .why-card h3{font-size:1.08rem; margin-bottom:0.55rem; display:flex; align-items:center; gap:0.6rem;}
-  .why-card p{color:var(--sub); font-size:0.92rem;}
-  .dot{width:9px; height:9px; border-radius:50%; background:var(--mint); flex-shrink:0;}
-
-  /* PRICING */
-  .pricing{background:var(--dark);}
-  .pricing .section-head p{color:var(--sub);}
-  .price-grid{display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;}
-  @media (max-width:760px){ .price-grid{grid-template-columns:1fr;} }
-  .price-card{background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.12); border-radius:18px; padding:2rem;}
-  .price-card .tag{font-size:0.75rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--mint); font-weight:700;}
-  .price-card h3{color:#fff; font-size:1.3rem; margin:0.6rem 0 0.8rem;}
-  .price-card .amount{font-family:Cambria,serif; font-size:2.1rem; font-weight:700; color:#fff;}
-  .price-card .amount span{font-size:0.95rem; color:var(--sub); font-weight:400;}
-  .price-card ul{list-style:none; padding:0; margin:1.3rem 0 0; font-size:0.9rem; color:#D7ECEA;}
-  .price-card li{padding:0.4rem 0; padding-left:1.4rem; position:relative;}
-  .price-card li::before{content:"✓"; position:absolute; left:0; color:var(--mint); font-weight:700;}
-
-  /* FAQ */
-  .faq-item{border-bottom:1px solid var(--border); padding:1.3rem 0;}
-  .faq-q{display:flex; justify-content:space-between; align-items:center; cursor:pointer; font-weight:700; font-size:1rem;}
-  .faq-q .plus{font-size:1.3rem; color:var(--seafoam); transition:transform .2s;}
-  .faq-a{max-height:0; overflow:hidden; transition:max-height .25s ease; color:var(--sub); font-size:0.92rem;}
-  .faq-item.open .faq-a{max-height:200px; margin-top:0.8rem;}
-  .faq-item.open .plus{transform:rotate(45deg);}
-
-  /* CTA */
-  .cta-final{background:linear-gradient(135deg, var(--mint), var(--teal)); color:#04191C; border-radius:24px; padding:3.2rem 2.5rem; text-align:center; margin:0 1.5rem;}
-  .cta-final h2{color:#04191C; font-size:clamp(1.6rem,3vw,2.1rem);}
-  .cta-final p{color:#0A3A3F; margin:0.9rem auto 1.8rem; max-width:32rem;}
-  .cta-final .btn-primary{background:#04191C; color:#fff; box-shadow:none;}
-
-  footer{padding:3rem 1.5rem 2.5rem; text-align:center; color:var(--sub); font-size:0.85rem;}
-  footer .brand{justify-content:center; margin-bottom:0.6rem;}
-  footer .foot-links{margin-top:0.8rem; display:flex; gap:1.2rem; justify-content:center; font-size:0.82rem;}
-  footer .foot-links a{text-decoration:underline; color:var(--sub);}
-
-  /* CAMPAIGN STRIP */
-  .campaign-strip{background:var(--mint); color:#04191C; text-align:center; font-size:0.88rem; font-weight:700; padding:0.6rem 1rem;}
-  .campaign-strip span{font-weight:400;}
-
-  /* ABOUT / STORY */
-  .about-grid{display:grid; grid-template-columns:1.2fr 0.8fr; gap:2.5rem; align-items:start;}
-  @media (max-width:800px){ .about-grid{grid-template-columns:1fr;} }
-  .about-grid p{color:var(--ink); font-size:1.02rem; margin-bottom:1rem; line-height:1.65;}
-  .mission-box{background:var(--card); border:1px solid var(--border); border-radius:16px; padding:1.8rem;}
-  .mission-box .eyebrow{margin-bottom:0.8rem;}
-  .mission-box p{color:var(--ink); font-size:0.98rem; line-height:1.6;}
-  .draft-flag{display:inline-block; font-size:0.72rem; font-weight:700; letter-spacing:0.03em; color:var(--warn); background:rgba(240,133,125,0.12); border:1px solid rgba(240,133,125,0.3); border-radius:6px; padding:0.2rem 0.55rem; margin-bottom:0.9rem;}
-
-  /* YDELSE */
-  .ydelse-list{display:grid; grid-template-columns:1fr 1fr; gap:1.6rem 2.2rem;}
-  @media (max-width:760px){ .ydelse-list{grid-template-columns:1fr;} }
-  .ydelse-item{display:flex; gap:1rem; align-items:flex-start;}
-  .ydelse-item .icon-circle{flex-shrink:0; width:42px; height:42px; margin-bottom:0;}
-  .ydelse-item h3{font-size:1.02rem; margin-bottom:0.35rem;}
-  .ydelse-item p{color:var(--sub); font-size:0.9rem;}
-
-  /* SHOWCASE */
-  .showcase-row{display:flex; align-items:center; justify-content:center; gap:1.8rem; flex-wrap:wrap;}
-  .showcase-col{display:flex; flex-direction:column; align-items:center;}
-  .showcase-label{margin-top:1rem; font-size:0.85rem; font-weight:700; color:var(--seafoam); background:var(--card); border-radius:999px; padding:0.35rem 0.9rem;}
-  .showcase-arrow{font-size:1.8rem; color:rgba(255,255,255,0.25); flex-shrink:0;}
-  @media (max-width:760px){ .showcase-arrow{transform:rotate(90deg);} }
-  .mini-phone{width:230px; background:var(--dark); border-radius:26px; padding:11px; box-shadow:0 20px 50px -16px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.06);}
-  .mini-screen{background:var(--screen); border-radius:16px; overflow:hidden; padding:0.9rem; min-height:230px; display:flex; flex-direction:column; justify-content:center;}
-  .mini-upload{border:2px dashed #D7E9E7; border-radius:12px; padding:1.6rem 0.8rem; text-align:center; background:#EAF5F4;}
-  .mini-upload .su-title{font-size:0.8rem; font-weight:700; color:#132B30; margin-top:0.6rem;}
-  .mini-upload .su-sub{font-size:0.68rem; color:#5C7377; margin-top:0.25rem; line-height:1.4;}
-
-  /* FEEDBACK POPUP */
-  .feedback-overlay{display:none; position:fixed; inset:0; background:rgba(2,15,17,0.78); z-index:50; align-items:center; justify-content:center; padding:1.5rem;}
-  .feedback-overlay.open{display:flex;}
-  .feedback-modal{background:var(--card); border:1px solid var(--border); border-radius:20px; padding:2.2rem 1.8rem; max-width:420px; width:100%; position:relative; text-align:center;}
-  .feedback-close{position:absolute; top:0.9rem; right:1.1rem; background:none; border:none; color:var(--sub); font-size:1.6rem; line-height:1; cursor:pointer;}
-  .feedback-modal h3{font-size:1.2rem; margin-bottom:0.4rem;}
-  .feedback-modal .sub-text{color:var(--sub); font-size:0.88rem; margin-bottom:1.4rem;}
-  .emoji-row{display:flex; justify-content:center; gap:0.55rem; flex-wrap:wrap;}
-  .emoji-btn{font-size:1.9rem; background:rgba(255,255,255,0.04); border:1.5px solid var(--border); border-radius:14px; width:54px; height:54px; cursor:pointer; transition:transform .15s, border-color .15s; display:flex; align-items:center; justify-content:center;}
-  .emoji-btn:hover{transform:translateY(-3px);}
-  .emoji-btn.selected{border-color:var(--mint); background:rgba(2,230,184,0.12);}
-  .feedback-detail{display:none; margin-top:1.4rem; text-align:left;}
-  .feedback-detail textarea{width:100%; min-height:80px; border-radius:12px; border:1.5px solid var(--border); background:rgba(255,255,255,0.05); color:var(--ink); padding:0.8rem; font-family:inherit; font-size:0.92rem; margin-bottom:1rem; resize:vertical;}
-  .feedback-detail textarea::placeholder{color:var(--sub);}
-  .feedback-detail .btn{width:100%;}
-  .feedback-success{display:none; color:var(--mint); font-weight:700; margin-top:1.4rem;}
-
-  /* SIGNUP */
-  .signup-section{background:var(--dark); text-align:center;}
-  .signup-section .eyebrow{color:var(--mint); justify-content:center;}
-  .signup-section h2{color:#fff; font-size:clamp(1.5rem,2.8vw,2.1rem); margin-top:0.8rem;}
-  .signup-section p{color:var(--sub); margin-top:0.7rem;}
-  .signup-form{display:flex; gap:0.7rem; max-width:420px; margin:1.8rem auto 0; flex-wrap:wrap; justify-content:center;}
-  .signup-form input[type="email"]{flex:1; min-width:200px; padding:0.85rem 1.1rem; border-radius:999px; border:1.5px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.06); color:var(--ink); font-size:0.95rem;}
-  .signup-form input[type="email"]::placeholder{color:var(--sub);}
-  .signup-form button{background:var(--mint); color:#04191C; border:none;}
-  .signup-note{color:var(--sub); font-size:0.78rem; margin-top:0.9rem;}
-  .signup-success{display:none; color:var(--mint); font-weight:700; margin-top:1.8rem; font-size:1.05rem;}
-
-  /* LIVE EMBED */
-  .live-frame{max-width:520px; margin:2.5rem auto 0; background:var(--dark); border-radius:34px; padding:14px; box-shadow:0 30px 70px -20px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.06);}
-  .live-frame iframe{width:100%; height:760px; border:none; border-radius:22px; background:var(--screen); display:block;}
-  .live-badge{display:inline-flex; align-items:center; gap:0.4rem; font-size:0.78rem; font-weight:700; color:var(--mint); background:rgba(2,230,184,0.1); border:1px solid rgba(2,230,184,0.3); border-radius:999px; padding:0.3rem 0.8rem; margin:2.5rem 0 0;}
-  .live-badge::before{content:""; width:7px; height:7px; border-radius:50%; background:var(--mint); animation:pulse 1.6s infinite;}
-  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:0.3;}}
-</style>
-</head>
-<body>
-
-<div class="campaign-strip">🎉 Vi lancerer lige nu — <span>helt gratis at prøve i denne omgang. Vi vil bare gerne have din ærlige mening.</span></div>
-
-<header>
-  <nav>
-    <a href="#" class="brand"><span class="brand-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></svg></span>SnapSælg</a>
-    <div class="links">
-      <a href="#ydelse">Vores ydelse</a>
-      <a href="#saadan">Sådan virker det</a>
-      <a href="#hvem">Hvem er det til</a>
-      <a href="#om">Vores historie</a>
-      <a href="#faq">Spørgsmål</a>
+  <div style="text-align:center; margin-bottom:1.75rem;">
+    <div style="width:52px;height:52px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></svg>
     </div>
-    <a href="app.html" class="btn btn-primary" style="padding:0.6rem 1.3rem; font-size:0.85rem;">Prøv SnapSælg →</a>
-  </nav>
-</header>
+    <h1 style="font-family:Cambria, Georgia, serif; font-size:1.5rem; font-weight:700; margin:0;">SnapSælg — test</h1>
+    <p id="headerSub" style="color:var(--sub); font-size:0.9rem; margin:0.35rem 0 0;">Upload op til 15 billeder af din fars ting. Gennemgå dem én ad gangen, kopiér titel og beskrivelse hver for sig.</p>
+    <span id="creditsBadge" style="display:none; margin-top:0.6rem; font-size:0.75rem; font-weight:700; color:var(--teal); background:var(--tint); border-radius:999px; padding:0.3rem 0.8rem;"></span>
+  </div>
 
-<section class="hero">
-  <div class="wrap hero-grid">
-    <div>
-      <span class="eyebrow">Lancerer 1. september · Danmark</span>
-      <h1>Fra rodet reol til <em>salgsklar annonce</em> på under et minut</h1>
-      <p class="lede">Fotografér dine ting. SnapSælg genererer titel, beskrivelse og prisforslag automatisk — klar til at indsætte direkte på DBA, Facebook og Vinted.</p>
-      <div class="ctas">
-        <a href="app.html" class="btn btn-primary">Prøv SnapSælg nu →</a>
-        <a href="#saadan" class="btn btn-ghost">Se hvordan det virker ↓</a>
-      </div>
+  <!-- CREDIT GATE -->
+  <div id="creditGate" style="display:none;">
+    <div id="gateSignupState" style="border:2px solid var(--mint); border-radius:12px; padding:2rem 1.2rem; text-align:center; background:var(--tint);">
+      <div style="font-size:1.6rem; margin-bottom:0.5rem;">🔒</div>
+      <div style="font-weight:700; font-size:1rem; margin-bottom:0.4rem; color:var(--ink);">Tilmeld dig for at komme i gang</div>
+      <div style="font-size:0.85rem; color:var(--sub); margin-bottom:1.2rem;">Gratis, ingen kreditkort — få 5 credits med det samme.</div>
+      <form id="gateForm" name="kundeklub" method="POST" data-netlify="true" netlify-honeypot="bot-field" style="display:flex; flex-direction:column; gap:0.6rem;">
+        <input type="hidden" name="form-name" value="kundeklub">
+        <p style="position:absolute; left:-9999px;"><label>Udfyld ikke dette felt: <input name="bot-field"></label></p>
+        <input type="email" name="email" required placeholder="din@email.dk" style="padding:0.7rem 1rem; border-radius:999px; border:1.5px solid var(--border); font-size:0.9rem;">
+        <button type="submit" style="padding:0.7rem; border-radius:999px; background:var(--teal); color:#fff; border:none; font-weight:700; cursor:pointer;">Få 5 gratis credits</button>
+      </form>
     </div>
-    <div class="hero-visual">
-      <div class="phone">
-        <div class="phone-screen">
-          <div class="mock-photo">
-            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#028090" stroke-width="1.6"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></svg>
-          </div>
-          <div class="mock-title">Retro pladespiller, virker fint</div>
-          <div class="mock-desc">Velholdt pladespiller med varm lyd — perfekt til samlingen eller stuen. Sælges pga. flytning.</div>
-          <div class="mock-price"><span style="font-size:0.75rem;">Prisforslag</span><b>450 kr</b></div>
-        </div>
-        <span class="mock-tag t1">✓ Titel klar</span>
-        <span class="mock-tag t2">✓ Pris foreslået</span>
-      </div>
+    <div id="gateUpgradeState" style="display:none; border:2px solid var(--teal); border-radius:12px; padding:2rem 1.2rem; text-align:center; background:var(--tint);">
+      <div style="font-size:1.6rem; margin-bottom:0.5rem;">✨</div>
+      <div style="font-weight:700; font-size:1rem; margin-bottom:0.4rem; color:var(--ink);">Du har brugt dine 5 gratis credits</div>
+      <div style="font-size:0.85rem; color:var(--sub);">Skriv til <a href="mailto:hej@snapsaelg.dk" style="color:var(--teal);">hej@snapsaelg.dk</a> for at høre om et abonnement.</div>
     </div>
   </div>
-</section>
 
-<section style="padding-top:0; text-align:center;">
-  <div class="wrap" style="text-align:center;">
-    <span class="live-badge">Live — prøv den med det samme</span>
-    <div class="live-frame">
-      <iframe src="app.html" title="SnapSælg — prøv værktøjet"></iframe>
+  <!-- STEP 1: upload -->
+  <div id="uploadStep">
+    <div id="uploadZone" style="border:2px dashed var(--border); border-radius:12px; padding:2rem 1rem; text-align:center; cursor:pointer; background:var(--tint);">
+      <input type="file" id="fileInput" accept="image/*" multiple style="display:none">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#5C7377" stroke-width="1.6" style="margin-bottom:0.5rem;"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></svg>
+      <div style="font-size:0.95rem; color:var(--ink); font-weight:600;">Tryk for at vælge billeder</div>
+      <div style="font-size:0.8rem; color:var(--sub); margin-top:0.25rem;">Ét billede per vare, op til 15 ad gangen</div>
+      <div style="font-size:0.78rem; color:var(--seafoam); margin-top:0.6rem; background:rgba(0,168,150,0.1); border-radius:6px; padding:0.4rem 0.6rem; display:inline-block;">💡 Tip: læg varen på et lyst tæppe, håndklæde eller stykke karton — så ser billedet pænt ud, selvom rummet ikke er det</div>
     </div>
   </div>
-</section>
 
-<section class="signup-section">
-  <div class="wrap" style="max-width:600px;">
-    <span class="eyebrow">Kundeklub</span>
-    <h2>Tilmeld dig og få 5 gratis credits</h2>
-    <p>Ingen binding, intet kreditkort — bare din mail.</p>
-    <form id="kundeklubForm" name="kundeklub" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="signup-form">
-      <input type="hidden" name="form-name" value="kundeklub">
-      <p style="position:absolute; left:-9999px;"><label>Udfyld ikke dette felt: <input name="bot-field"></label></p>
-      <input type="email" name="email" required placeholder="din@email.dk">
-      <button type="submit" class="btn">Få 5 gratis credits</button>
-    </form>
-    <div id="kundeklubSuccess" class="signup-success">
-      <div>Tak! Du har nu 5 gratis credits.</div>
-      <a href="app.html" class="btn" style="background:var(--mint); color:#04191C; margin-top:1rem; display:inline-flex;">Åbn SnapSælg og prøv dit første billede →</a>
-    </div>
-    <p class="signup-note">Du kan altid afmelde dig igen. Vi sender ikke spam.</p>
+  <!-- STEP 2: queue preview -->
+  <div id="queueStep" style="display:none;">
+    <div id="thumbGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(72px, 1fr)); gap:0.5rem; margin-bottom:1rem;"></div>
+    <button id="generateAllBtn" style="width:100%; padding:0.85rem; border:none; border-radius:10px; background:var(--teal); color:#fff; font-size:1rem; font-weight:600; cursor:pointer;"></button>
+    <button id="resetBtn" style="width:100%; margin-top:0.5rem; padding:0.6rem; border:1px solid var(--border); border-radius:10px; background:transparent; color:var(--sub); font-size:0.85rem; cursor:pointer;">Start forfra</button>
   </div>
-</section>
 
-<section class="problem" id="hvem">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow">Problemet</span>
-      <h2>At skrive én annonce er let. At skrive halvtreds er hverken sjovt eller hurtigt.</h2>
-      <p>Hver ting kræver sit eget billede, sin egen tekst — og skal postes manuelt de rigtige steder. Det rammer tre typer mennesker på præcis samme måde.</p>
-    </div>
-    <div class="audience-grid">
-      <div class="card">
-        <div class="icon-circle"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></div>
-        <h3>Private, der rydder op</h3>
-        <p>En garage eller et loft fuldt af ting — ingen tid eller lyst til at annoncere hver ting enkeltvis.</p>
-      </div>
-      <div class="card">
-        <div class="icon-circle"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/></svg></div>
-        <h3>Aktive resellere</h3>
-        <p>Sælger jævnligt på flere platforme og taber timer på at genskrive samme annonce igen og igen.</p>
-      </div>
-      <div class="card">
-        <div class="icon-circle"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg></div>
-        <h3>Dødsbo- og flyttefirmaer</h3>
-        <p>Rydder hele hjem professionelt, hver eneste uge — samme flaskehals, bare i stor skala.</p>
-      </div>
+  <!-- STEP 3: processing -->
+  <div id="processingStep" style="display:none; text-align:center; padding:2rem 0;">
+    <div id="progressText" style="color:var(--sub); font-size:0.95rem; margin-bottom:0.75rem;"></div>
+    <div style="background:var(--tint); border-radius:999px; height:8px; overflow:hidden;">
+      <div id="progressFill" style="background:var(--teal); height:100%; width:0%; transition:width .2s;"></div>
     </div>
   </div>
-</section>
 
-<section id="ydelse">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow">Vores ydelse</span>
-      <h2>Det, du konkret får</h2>
-      <p>Ikke bare "endnu et værktøj" — her er nøjagtig, hvad SnapSælg leverer, hver gang du bruger den.</p>
+  <!-- STEP 4: review -->
+  <div id="reviewStep" style="display:none;">
+    <div id="cardCounter" style="text-align:center; color:var(--sub); font-size:0.85rem; margin-bottom:0.75rem;"></div>
+    <div id="reviewCard"></div>
+    <div style="display:flex; gap:0.6rem; margin-top:1rem;">
+      <button id="prevBtn" style="flex:1; padding:0.7rem; border:1px solid var(--border); border-radius:10px; background:#fff; color:var(--ink); font-size:0.9rem; cursor:pointer;">← Forrige</button>
+      <button id="nextBtn" style="flex:1; padding:0.7rem; border:none; border-radius:10px; background:var(--teal); color:#fff; font-size:0.9rem; font-weight:600; cursor:pointer;">Næste →</button>
     </div>
-    <div class="ydelse-list">
-      <div class="ydelse-item">
-        <div class="icon-circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></svg></div>
-        <div><h3>AI-genereret annoncetekst</h3><p>Titel, beskrivelse, kategori og standvurdering ud fra dine billeder, skrevet i dansk salgssprog — ikke en teknisk oversættelse.</p></div>
-      </div>
-      <div class="ydelse-item">
-        <div class="icon-circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-        <div><h3>Gennemtænkt prisforslag</h3><p>Selvsikkert på almindelige varer. På sjældne eller værdifulde ting: et ærligt interval, ikke et forkert gæt.</p></div>
-      </div>
-      <div class="ydelse-item">
-        <div class="icon-circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
-        <div><h3>Batch-behandling</h3><p>Op til 15 varer i én omgang, gennemgået roligt én ad gangen — ikke ét kaotisk billede-bjerg.</p></div>
-      </div>
-      <div class="ydelse-item">
-        <div class="icon-circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></div>
-        <div><h3>Klar til kopiering</h3><p>Titel og beskrivelse i separate felter, formateret præcis til hvert felt på DBA, Facebook og Vinted.</p></div>
-      </div>
-      <div class="ydelse-item">
-        <div class="icon-circle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-        <div><h3>Ingen automatisk postning</h3><p>Vi rører aldrig dine konti på DBA, Facebook eller Vinted. Du bevarer fuld kontrol, altid.</p></div>
-      </div>
-    </div>
+    <button id="resetBtn2" style="width:100%; margin-top:0.75rem; padding:0.6rem; border:1px solid var(--border); border-radius:10px; background:transparent; color:var(--sub); font-size:0.85rem; cursor:pointer;">Start forfra med nye billeder</button>
   </div>
-</section>
-
-<section id="se-det">
-  <div class="wrap" style="text-align:center;">
-    <div class="section-head" style="text-align:center; margin:0 auto 2.5rem;">
-      <span class="eyebrow">Se SnapSælg i aktion</span>
-      <h2>Fra billede til salgsklar annonce</h2>
-      <p>Sådan ser det faktisk ud, når du bruger værktøjet.</p>
-    </div>
-    <div class="showcase-row">
-      <div class="showcase-col">
-        <div class="mini-phone">
-          <div class="mini-screen">
-            <div class="mini-upload">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#5C7377" stroke-width="1.6" style="margin:0 auto; display:block;"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></svg>
-              <div class="su-title">Tryk for at vælge billeder</div>
-              <div class="su-sub">Ét billede per vare, op til 15 ad gangen</div>
-            </div>
-          </div>
-        </div>
-        <span class="showcase-label">1. Upload</span>
-      </div>
-      <div class="showcase-arrow">→</div>
-      <div class="showcase-col">
-        <div class="mini-phone">
-          <div class="mini-screen" style="background:var(--dark); padding:1rem;">
-            <div style="color:#8FC7C4; font-size:0.62rem; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:0.3rem;">Titel</div>
-            <div style="color:#fff; font-family:Cambria,serif; font-weight:700; font-size:0.9rem; margin-bottom:0.7rem;">Retro pladespiller, virker fint</div>
-            <div style="color:#8FC7C4; font-size:0.62rem; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:0.3rem;">Beskrivelse</div>
-            <div style="color:#D7ECEA; font-size:0.72rem; line-height:1.45; margin-bottom:0.7rem;">Velholdt pladespiller med varm lyd — perfekt til stuen. Sælges pga. flytning.</div>
-            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.08); border-radius:8px; padding:0.5rem 0.7rem;">
-              <span style="font-size:0.68rem; color:#9FC4C1;">Prisforslag</span>
-              <b style="color:var(--mint); font-family:Cambria,serif; font-size:1rem;">450 kr</b>
-            </div>
-          </div>
-        </div>
-        <span class="showcase-label">2. Klar til kopiering</span>
-      </div>
-    </div>
-    <a href="app.html" class="btn btn-primary" style="margin-top:2.5rem;">Prøv det rigtige værktøj nu →</a>
-  </div>
-</section>
-
-<section id="saadan">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow">Sådan virker det</span>
-      <h2>Fire trin, ingen læringskurve</h2>
-      <p>Ingen automatisk postning til DBA, Facebook eller Vinted — du beholder fuld kontrol, og din konto er aldrig i fare.</p>
-    </div>
-    <div class="steps">
-      <div class="step"><div class="num">01</div><h3>Fotografér</h3><p>Tag op til 15 billeder ad gangen — ét ad gangen, eller hele bunken på én gang.</p></div>
-      <div class="step"><div class="num">02</div><h3>AI genererer</h3><p>Titel, beskrivelse og prisforslag klar på sekunder, tilpasset dansk salgssprog.</p></div>
-      <div class="step"><div class="num">03</div><h3>Sæt prisen</h3><p>Én vare ad gangen på skærmen — bekræft eller justér, så videre til næste.</p></div>
-      <div class="step"><div class="num">04</div><h3>Kopiér & indsæt</h3><p>Separate knapper til titel og beskrivelse, klar til hvert felt på DBA og Vinted.</p></div>
-    </div>
-    <div class="note-strip">💡 Usikker på en vare? SnapSælg gætter ikke blindt på dyre design- eller mærkevarer — den beder dig bekræfte, og giver et ærligt prisinterval i stedet for et forkert tal.</div>
-  </div>
-</section>
-
-<section class="problem">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow">Hvorfor SnapSælg</span>
-      <h2>Bygget til Danmark, ikke oversat til Danmark</h2>
-    </div>
-    <div class="why-grid">
-      <div class="why-card"><h3><span class="dot"></span>Kender DBA</h3><p>De store internationale værktøjer springer EU over eller aldrig hørt om DBA. SnapSælg er bygget til danske platforme fra dag ét.</p></div>
-      <div class="why-card"><h3><span class="dot"></span>Din konto er sikker</h3><p>Vi poster aldrig automatisk på dine vegne. Du kopierer selv ind — det holder os inden for DBA's og Vinteds regler, hver gang.</p></div>
-      <div class="why-card"><h3><span class="dot"></span>Ærlig, ikke bare hurtig</h3><p>På dyre eller sjældne ting foreslår vi et prisinterval og peger dig hen, hvor du selv kan tjekke — i stedet for at gætte og skade dit salg.</p></div>
-      <div class="why-card"><h3><span class="dot"></span>Skalerer med dig</h3><p>Fra én engangsoprydning til en fast strøm af varer hver uge — samme værktøj, to måder at betale på.</p></div>
-    </div>
-  </div>
-</section>
-
-<section id="om">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow">Vores historie</span>
-      <h2>Hvorfor SnapSælg findes</h2>
-    </div>
-    <div class="about-grid">
-      <div>
-        <span class="draft-flag">Udkast — gør den til din egen</span>
-        <p>SnapSælg startede ikke som en forretningsplan. Det startede med en bunke ting, jeg selv skulle af med.</p>
-        <p>Jeg opdagede, hvor meget tid der gik med at fotografere, skrive og genskrive den samme slags annonce igen og igen — på DBA, på Facebook, på Vinted. Jeg har kastet mig ud i en del forskellige projekter undervejs, med blandet held. Men det her var første gang, problemet var så konkret og så tydeligt mit eget, at jeg ikke kunne lade være med at bygge en løsning på det.</p>
-        <p>SnapSælg er resultatet: et lille, ærligt værktøj, der tager det kedelige arbejde fra dig, så du kan bruge tiden på det, der faktisk betyder noget.</p>
-        <p style="font-weight:700;">— Grundlæggeren bag SnapSælg</p>
-      </div>
-      <div class="mission-box">
-        <span class="eyebrow">Vores mission</span>
-        <p>At gøre det hurtigt og trygt at sælge sine ting — uden at skulle blive ekspert i markedsføring, og uden at risikere den konto, du allerede har brugt år på at opbygge.</p>
-        <p style="margin-top:0.9rem;">Vi gætter ikke med skråsikkerhed, når vi er i tvivl. Vi siger det ærligt, og lader dig tage den endelige beslutning.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="pris" class="pricing">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow">Pris</span>
-      <h2 style="color:#fff;">To måder at bruge SnapSælg på</h2>
-      <p>Fordi oprydning er noget forskelligt for en privatperson og en professionel.</p>
-    </div>
-    <div class="price-grid">
-      <div class="price-card">
-        <span class="tag">Privat</span>
-        <h3>Oprydningspakke</h3>
-        <div class="amount">Engangsbeløb</div>
-        <ul>
-          <li>Op til 100 varer i én omgang</li>
-          <li>Ingen abonnement, ingen binding</li>
-          <li>Perfekt til flytning, arv eller forårsoprydning</li>
-        </ul>
-      </div>
-      <div class="price-card" style="border-color:var(--mint);">
-        <span class="tag">Reseller & dødsbofirma</span>
-        <h3>Abonnement</h3>
-        <div class="amount">99-149 kr <span>/ md</span></div>
-        <ul>
-          <li>Ubegrænset antal varer hver måned</li>
-          <li>Prioriteret ved nye funktioner</li>
-          <li>Til dig, for hvem oprydning er en fast forretning</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="faq">
-  <div class="wrap" style="max-width:760px;">
-    <div class="section-head">
-      <span class="eyebrow">Spørgsmål</span>
-      <h2>Godt at vide</h2>
-    </div>
-    <div class="faq-list">
-      <div class="faq-item">
-        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span>Poster SnapSælg annoncerne automatisk for mig?</span><span class="plus">+</span></div>
-        <div class="faq-a">Nej, med vilje. Du kopierer selv titel og beskrivelse ind på DBA, Facebook eller Vinted. Det er lidt mere arbejde end "ét klik" — men det betyder også, at din konto aldrig er i risiko for at blive lukket for automatiseret aktivitet.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span>Hvor præcise er prisforslagene?</span><span class="plus">+</span></div>
-        <div class="faq-a">Rigtig gode på almindelige ting. På sjældne, dyre eller design-relaterede varer viser vi et interval i stedet for ét tal, og fortæller dig ærligt hvor du selv kan tjekke videre — vi gætter ikke, hvis vi er i tvivl.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span>Virker det kun til Danmark?</span><span class="plus">+</span></div>
-        <div class="faq-a">Vi starter i Danmark, hvor vi kender platformene og sproget bedst. Sverige, Norge og Finland er på vejen, med samme princip: lokale platforme, ikke en generisk oversættelse.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="this.parentElement.classList.toggle('open')"><span>Hvad hvis jeg driver et dødsbo- eller flyttefirma?</span><span class="plus">+</span></div>
-        <div class="faq-a">Så er du præcis, hvem vi bygger til. Skriv til os — vi vil gerne høre, hvad der ville gøre SnapSælg til et fast værktøj i jeres arbejde.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="kontakt">
-  <div class="wrap" style="max-width:760px; text-align:center; margin-bottom:1.5rem;">
-    <span class="eyebrow">Din mening</span>
-    <h2 style="margin-top:0.7rem; font-size:clamp(1.5rem,2.6vw,2rem);">Hvordan var din oplevelse?</h2>
-    <p style="color:var(--sub); margin-top:0.7rem;">Ét klik er nok — uddyb gerne, hvis du har lyst. Vi læser alt.</p>
-  </div>
-  <div class="cta-final">
-    <h2>Fortæl os, hvad du synes</h2>
-    <p>Godt eller skidt — din ærlige reaktion hjælper os med at gøre SnapSælg bedre.</p>
-    <button type="button" id="openFeedback" class="btn btn-primary">Giv feedback →</button>
-  </div>
-</section>
-
-<div class="feedback-overlay" id="feedbackOverlay">
-  <div class="feedback-modal">
-    <button type="button" class="feedback-close" id="closeFeedback">×</button>
-    <h3>Hvordan var din oplevelse med SnapSælg?</h3>
-    <p class="sub-text">Vælg det, der passer bedst.</p>
-    <div class="emoji-row" id="emojiRow">
-      <button type="button" class="emoji-btn" data-value="Elsker det">😍</button>
-      <button type="button" class="emoji-btn" data-value="Godt">😊</button>
-      <button type="button" class="emoji-btn" data-value="Okay">😐</button>
-      <button type="button" class="emoji-btn" data-value="Skuffet">😕</button>
-      <button type="button" class="emoji-btn" data-value="Dårligt">😢</button>
-    </div>
-    <form id="feedbackForm" name="feedback" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="feedback-detail" id="feedbackDetail">
-      <input type="hidden" name="form-name" value="feedback">
-      <input type="hidden" name="reaktion" id="feedbackReaction">
-      <p style="position:absolute; left:-9999px;"><label>Udfyld ikke dette felt: <input name="bot-field"></label></p>
-      <textarea name="besked" placeholder="Vil du uddybe? (valgfrit)"></textarea>
-      <button type="submit" class="btn btn-primary">Send</button>
-    </form>
-    <div class="feedback-success" id="feedbackSuccess">Tak for din feedback — det betyder meget! 🙏</div>
-  </div>
-</div>
-
-<footer>
-  <div class="brand"><span class="brand-mark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></svg></span>SnapSælg</div>
-  <p>Lavet i Danmark. Bygget til Danmark. © 2026</p>
-  <div class="foot-links">
-    <a href="handelsbetingelser.html">Handelsbetingelser</a>
-    <a href="mailto:hej@snapsaelg.dk">Kontakt</a>
-  </div>
-</footer>
 
 <script>
-  var kundeklubForm = document.getElementById('kundeklubForm');
-  if (kundeklubForm) {
-    kundeklubForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-      var form = e.target;
-      var data = new FormData(form);
-      fetch('/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams(data).toString()
-      }).then(function () {
-        localStorage.setItem('snapsaelg_credits', '5');
-        localStorage.setItem('snapsaelg_signedup', 'true');
-        form.style.display = 'none';
-        document.getElementById('kundeklubSuccess').style.display = 'block';
-      }).catch(function () {
-        alert('Noget gik galt — prøv igen, eller skriv til hej@snapsaelg.dk');
-      });
-    });
+const MAX_ITEMS = 15;
+let items = []; // {file, base64, mediaType, previewUrl, result, status}
+let currentIndex = 0;
+
+const uploadZone = document.getElementById('uploadZone');
+const fileInput = document.getElementById('fileInput');
+const uploadStep = document.getElementById('uploadStep');
+const queueStep = document.getElementById('queueStep');
+const processingStep = document.getElementById('processingStep');
+const reviewStep = document.getElementById('reviewStep');
+const thumbGrid = document.getElementById('thumbGrid');
+const generateAllBtn = document.getElementById('generateAllBtn');
+const progressText = document.getElementById('progressText');
+const progressFill = document.getElementById('progressFill');
+const cardCounter = document.getElementById('cardCounter');
+const reviewCard = document.getElementById('reviewCard');
+const headerSub = document.getElementById('headerSub');
+
+uploadZone.addEventListener('click', () => fileInput.click());
+
+function getCredits() {
+  const v = localStorage.getItem('snapsaelg_credits');
+  return v === null ? 0 : parseInt(v, 10);
+}
+function isSignedUp() {
+  return localStorage.getItem('snapsaelg_signedup') === 'true';
+}
+function spendCredit() {
+  const c = Math.max(0, getCredits() - 1);
+  localStorage.setItem('snapsaelg_credits', String(c));
+  return c;
+}
+function refreshGate() {
+  const credits = getCredits();
+  const gate = document.getElementById('creditGate');
+  const badge = document.getElementById('creditsBadge');
+  if (credits > 0) {
+    gate.style.display = 'none';
+    uploadStep.style.display = 'block';
+    badge.style.display = 'inline-block';
+    badge.textContent = credits + (credits === 1 ? ' credit tilbage' : ' credits tilbage');
+    return true;
   }
-</script>
+  uploadStep.style.display = 'none';
+  gate.style.display = 'block';
+  badge.style.display = 'none';
+  document.getElementById('gateSignupState').style.display = isSignedUp() ? 'none' : 'block';
+  document.getElementById('gateUpgradeState').style.display = isSignedUp() ? 'block' : 'none';
+  return false;
+}
 
-<script>
-  var openBtn = document.getElementById('openFeedback');
-  var closeBtn = document.getElementById('closeFeedback');
-  var overlay = document.getElementById('feedbackOverlay');
-  var emojiButtons = document.querySelectorAll('.emoji-btn');
-  var detailForm = document.getElementById('feedbackForm');
-  var reactionInput = document.getElementById('feedbackReaction');
-  var successEl = document.getElementById('feedbackSuccess');
-
-  if (openBtn) openBtn.addEventListener('click', function () { overlay.classList.add('open'); });
-  if (closeBtn) closeBtn.addEventListener('click', function () { overlay.classList.remove('open'); });
-  overlay.addEventListener('click', function (e) { if (e.target === overlay) overlay.classList.remove('open'); });
-
-  emojiButtons.forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      emojiButtons.forEach(function (b) { b.classList.remove('selected'); });
-      btn.classList.add('selected');
-      reactionInput.value = btn.getAttribute('data-value');
-      detailForm.style.display = 'block';
+const gateForm = document.getElementById('gateForm');
+if (gateForm) {
+  gateForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const data = new FormData(gateForm);
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(data).toString()
+    }).then(() => {
+      localStorage.setItem('snapsaelg_credits', '5');
+      localStorage.setItem('snapsaelg_signedup', 'true');
+      refreshGate();
+    }).catch(() => {
+      alert('Noget gik galt — prøv igen, eller skriv til hej@snapsaelg.dk');
     });
   });
+}
 
-  if (detailForm) {
-    detailForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-      var data = new FormData(detailForm);
-      fetch('/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams(data).toString()
-      }).then(function () {
-        detailForm.style.display = 'none';
-        document.getElementById('emojiRow').style.display = 'none';
-        successEl.style.display = 'block';
-      }).catch(function () {
-        alert('Noget gik galt — prøv igen, eller skriv til hej@snapsaelg.dk');
-      });
-    });
+function redeemFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const grant = parseInt(params.get('credits'), 10);
+  if (grant && grant > 0) {
+    const newTotal = getCredits() + grant;
+    localStorage.setItem('snapsaelg_credits', String(newTotal));
+    localStorage.setItem('snapsaelg_signedup', 'true');
+    alert('Tak for dit k\u00f8b! ' + grant + ' credits er tilf\u00f8jet \u2014 du har nu ' + newTotal + ' credits i alt.');
+    window.history.replaceState({}, document.title, window.location.pathname);
   }
-</script>
+}
 
-</body>
-</html>
+redeemFromUrl();
+refreshGate();
+
+function resizeImage(file, maxDim = 1568, quality = 0.85) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > maxDim || height > maxDim) {
+          if (width > height) { height = Math.round(height * (maxDim / width)); width = maxDim; }
+          else { width = Math.round(width * (maxDim / height)); height = maxDim; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        const dataUrl = canvas.toDataURL('image/jpeg', quality);
+        resolve({ base64: dataUrl.split(',')[1], mediaType: 'image/jpeg', previewUrl: dataUrl });
+      };
+      img.onerror = () => reject(new Error('Ugyldigt billedformat'));
+      img.src = reader.result;
+    };
+    reader.onerror = () => reject(new Error('Kunne ikke læse filen'));
+    reader.readAsDataURL(file);
+  });
+}
+
+fileInput.addEventListener('change', async (e) => {
+  const files = Array.from(e.target.files).slice(0, MAX_ITEMS);
+  if (!files.length) return;
+  items = [];
+  for (let i = 0; i < files.length; i++) {
+    try {
+      const resized = await resizeImage(files[i]);
+      items[i] = { file: files[i], ...resized, result: null, status: 'pending' };
+    } catch (err) {
+      items[i] = { file: files[i], base64: null, mediaType: null, previewUrl: null, result: null, status: 'error', error: 'Kunne ikke læse billedet' };
+    }
+  }
+  showQueue();
+});
+
+function showQueue() {
+  uploadStep.style.display = 'none';
+  queueStep.style.display = 'block';
+  thumbGrid.innerHTML = items.map(it =>
+    `<img src="${it.previewUrl}" style="width:100%; aspect-ratio:1; object-fit:cover; border-radius:8px; border:1px solid var(--border);">`
+  ).join('');
+  generateAllBtn.textContent = `Generér ${items.length} annonce${items.length > 1 ? 'r' : ''}`;
+}
+
+document.getElementById('resetBtn').addEventListener('click', resetAll);
+document.getElementById('resetBtn2').addEventListener('click', resetAll);
+function resetAll() {
+  items = []; currentIndex = 0; fileInput.value = '';
+  queueStep.style.display = 'none';
+  reviewStep.style.display = 'none';
+  headerSub.textContent = "Upload op til 15 billeder af din fars ting. Gennemgå dem én ad gangen, kopiér titel og beskrivelse hver for sig.";
+  refreshGate();
+}
+
+const CONDITIONS = ["Ny", "Som ny", "Brugt, pæn stand", "Brugt, slidt", "Defekt / til reservedele"];
+
+const PROMPT = `Du hjælper med at skrive KORTE, SÆLGENDE annoncer til brugte varer på danske markedspladser (DBA, Facebook Marketplace, Vinted) ud fra et billede, og estimere en realistisk pris.
+
+VIGTIGT om prisestimering — skeln mellem to typer varer:
+- ALMINDELIGE/FUNKTIONELLE varer (fx babyudstyr, husholdningsapparater, standardmøbler uden kendt designer): her varierer prisen ikke meget med mærke. Giv et selvsikkert estimat.
+- DESIGN/LUKSUS/SAMLERVARER (fx designermøbler, ure, smykker, mærkevaretøj, high-end elektronik): her kan prisen variere 10-50x afhængig af det PRÆCISE mærke/designer/model/år. Kig altid efter synlige mærker, stempler, signaturer eller distinkte designtræk. Hvis du IKKE er sikker på det præcise mærke/model, MÅ DU IKKE gætte selvsikkert på prisen. Sæt i stedet needs_brand_confirmation til true, sæt price_dkk til "Bekræft mærke for prisforslag", og skriv et konkret, specifikt spørgsmål i confirmation_question (fx "Denne sofa ligner en designer-model — kender du mærke/designer og evt. årstal?").
+
+Analysér billedet og generér:
+1. Titel (maks. 60 tegn) i stil med dem man ser på DBA
+2. Beskrivelse — maks. 2-3 korte, sælgende sætninger. Skriv som en rigtig sælger, ikke en teknisk specifikation.
+3. Foreslået kategori (i platformenes eget sprog, fx "Møbler", "Mobiltelefoner")
+4. Foreslået stand — vælg PRÆCIS én af disse fem: "Ny", "Som ny", "Brugt, pæn stand", "Brugt, slidt", "Defekt / til reservedele"
+5. Prisforslag i DKK efter reglen ovenfor
+6. Kort begrundelse for prisen
+7. needs_brand_confirmation: true eller false
+8. confirmation_question: spørgsmålet hvis true, ellers tom streng
+
+Svar UDELUKKENDE med gyldig JSON, intet andet:
+{"title": "...", "description": "...", "suggested_category": "...", "suggested_condition": "...", "price_dkk": "...", "price_reasoning": "...", "needs_brand_confirmation": false, "confirmation_question": ""}`;
+
+function refinePrompt(brandText, condition) {
+  return `Brugeren har bekræftet yderligere information om varen på billedet:
+Mærke/model/designer: ${brandText || "(ikke oplyst)"}
+Stand: ${condition}
+
+Opdatér titel og beskrivelse så de afspejler denne bekræftede information. Nævn mærket/designeren, hvis det reelt øger salgsværdien.
+
+Om prisen: Hvis dette nu er en almindelig, veldefineret vare, giv ét selvsikkert prisforslag. MEN hvis dette er en potentielt værdifuld design-, vintage- eller samlervare (fx dansk designmøbel, ure, kunst, antikviteter), hvor den præcise model, produktionsår eller ægthed stadig ikke kan bekræftes ud fra billedet alene: giv i stedet et ærligt, bredere prisinterval (fx "12.000-22.000 kr") frem for et enkelt tal — det er mere korrekt end falsk præcision. Forklar kort i price_reasoning hvorfor der er en range, og nævn eksplicit om prisintervallet du kender bedst til er NYPRIS fra forhandlere eller brugt-pris mellem private, da de kan være meget forskellige. Udfyld desuden research_tip med en kort forklaring af hvad brugeren bør tjekke selv. Udfyld search_query med en kort, konkret Google-søgefrase (3-5 ord, fx "wegner getama sofa brugt"), som brugeren kan klikke sig direkte til — men kun hvis det reelt er en type vare, hvor sådan en søgning giver mening. Ellers lad research_tip og search_query være tomme strenge.
+
+Svar UDELUKKENDE med gyldig JSON, intet andet:
+{"title": "...", "description": "...", "price_dkk": "...", "price_reasoning": "...", "research_tip": "...", "search_query": "..."}`;
+}
+
+generateAllBtn.addEventListener('click', async () => {
+  queueStep.style.display = 'none';
+  processingStep.style.display = 'block';
+
+  for (let i = 0; i < items.length; i++) {
+    progressText.textContent = `Analyserer vare ${i + 1} af ${items.length}…`;
+    progressFill.style.width = Math.round((i / items.length) * 100) + '%';
+    if (items[i].status === 'error' || !items[i].base64) {
+      items[i].status = 'error';
+      items[i].error = items[i].error || 'Billedet kunne ikke læses';
+      continue;
+    }
+    try {
+      const response = await fetch("/.netlify/functions/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-6",
+          max_tokens: 1000,
+          messages: [{
+            role: "user",
+            content: [
+              { type: "image", source: { type: "base64", media_type: items[i].mediaType, data: items[i].base64 } },
+              { type: "text", text: PROMPT }
+            ]
+          }]
+        })
+      });
+      if (!response.ok) throw new Error('API-fejl ' + response.status);
+      const data = await response.json();
+      const text = (data.content || []).map(b => b.text || '').join('\n').trim();
+      const clean = text.replace(/```json|```/g, '').trim();
+      items[i].result = JSON.parse(clean);
+      items[i].status = 'done';
+      const remaining = spendCredit();
+      if (remaining <= 0 && i < items.length - 1) {
+        for (let j = i + 1; j < items.length; j++) {
+          items[j].status = 'error';
+          items[j].error = 'Ingen credits tilbage — tilmeld dig for flere';
+        }
+        break;
+      }
+    } catch (err) {
+      items[i].status = 'error';
+      items[i].error = err.message;
+    }
+  }
+  progressFill.style.width = '100%';
+  currentIndex = 0;
+  processingStep.style.display = 'none';
+  reviewStep.style.display = 'block';
+  headerSub.textContent = "Gennemgå hver vare, kopiér titel og beskrivelse hver for sig ind i DBA/Facebook/Vinted.";
+  const badge = document.getElementById('creditsBadge');
+  const c = getCredits();
+  if (c > 0) { badge.textContent = c + (c === 1 ? ' credit tilbage' : ' credits tilbage'); }
+  else { badge.style.display = 'none'; }
+  renderCard();
+});
+
+document.getElementById('prevBtn').addEventListener('click', () => {
+  currentIndex = Math.max(0, currentIndex - 1);
+  renderCard();
+});
+document.getElementById('nextBtn').addEventListener('click', () => {
+  currentIndex = Math.min(items.length - 1, currentIndex + 1);
+  renderCard();
+});
+
+function copyField(text, btn, label) {
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = 'Kopieret ✓';
+    setTimeout(() => { btn.textContent = orig; }, 1500);
+  });
+}
+
+function renderCard() {
+  const it = items[currentIndex];
+  cardCounter.textContent = `Vare ${currentIndex + 1} af ${items.length}`;
+  document.getElementById('prevBtn').style.opacity = currentIndex === 0 ? '0.4' : '1';
+  document.getElementById('nextBtn').textContent = currentIndex === items.length - 1 ? 'Sidste vare ✓' : 'Næste →';
+
+  if (it.status === 'error') {
+    reviewCard.innerHTML = `<div style="background:var(--tint); border:1px solid var(--border); border-radius:12px; padding:1.25rem; text-align:center; color:var(--warn); font-size:0.9rem;">Kunne ikke analysere dette billede (${escapeHtml(it.error || '')}). Spring til næste eller prøv igen senere.</div>`;
+    return;
+  }
+
+  const r = it.result;
+  const needsConfirm = !!r.needs_brand_confirmation;
+  const condOptions = CONDITIONS.map(c =>
+    `<option value="${c}" ${c === r.suggested_condition ? 'selected' : ''}>${c}</option>`
+  ).join('');
+
+  reviewCard.innerHTML = `
+    <div style="background:var(--dark); border-radius:12px; padding:1.5rem;">
+      <img src="${it.previewUrl}" style="width:100%; max-height:180px; object-fit:contain; border-radius:8px; margin-bottom:1.1rem; background:rgba(255,255,255,0.06);">
+
+      <div style="color:#8FC7C4; font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:0.4rem;">Titel</div>
+      <div id="titleText" style="color:#fff; font-family:Cambria, Georgia, serif; font-size:1.1rem; font-weight:700; margin-bottom:0.6rem;">${escapeHtml(r.title || '—')}</div>
+      <button class="copyTitleBtn" style="width:100%; padding:0.55rem; margin-bottom:1.1rem; border:1px solid rgba(255,255,255,0.25); border-radius:8px; background:transparent; color:#fff; font-size:0.85rem; cursor:pointer;">Kopiér titel</button>
+
+      <div style="color:#8FC7C4; font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:0.4rem;">Beskrivelse</div>
+      <div id="descText" style="color:#D7ECEA; font-size:0.9rem; line-height:1.5; margin-bottom:0.6rem;">${escapeHtml(r.description || '—')}</div>
+      <button class="copyDescBtn" style="width:100%; padding:0.55rem; margin-bottom:1.1rem; border:1px solid rgba(255,255,255,0.25); border-radius:8px; background:transparent; color:#fff; font-size:0.85rem; cursor:pointer;">Kopiér beskrivelse</button>
+
+      <div style="color:#8FC7C4; font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:0.4rem;">Pris — ret selv hvis du er uenig</div>
+      <div style="display:flex; align-items:center; gap:0.4rem; margin-bottom:0.25rem;">
+        <input id="priceInput" type="text" value="${escapeHtml(r.price_dkk || '')}" style="flex:1; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.25); border-radius:8px; padding:0.5rem 0.7rem; color:var(--mint); font-family:Cambria, Georgia, serif; font-size:1.15rem; font-weight:700;">
+      </div>
+      <div id="priceReasoning" style="color:#9FC4C1; font-size:0.78rem; margin-bottom:${r.research_tip ? '0.5rem' : '1rem'};">${escapeHtml(r.price_reasoning || '')}</div>
+      ${r.research_tip ? `<div style="background:rgba(2,195,154,0.12); border:1px solid rgba(2,195,154,0.35); border-radius:8px; padding:0.55rem 0.75rem; font-size:0.78rem; color:#9FE1CB; margin-bottom:1rem;">💡 ${escapeHtml(r.research_tip)}</div>` : ''}
+
+      <div style="display:flex; gap:0.6rem; flex-wrap:wrap; margin-bottom:1rem;">
+        <div style="background:rgba(255,255,255,0.08); border-radius:8px; padding:0.5rem 0.7rem; flex:1; min-width:120px;">
+          <div style="color:#8FC7C4; font-size:0.65rem; text-transform:uppercase; margin-bottom:0.2rem;">Kategori</div>
+          <div style="color:#fff; font-size:0.85rem; font-weight:600;">${escapeHtml(r.suggested_category || '—')}</div>
+        </div>
+      </div>
+
+      <div style="background:${needsConfirm ? 'rgba(186,117,23,0.18)' : 'rgba(255,255,255,0.06)'}; border:1px solid ${needsConfirm ? 'rgba(250,199,117,0.5)' : 'rgba(255,255,255,0.12)'}; border-radius:10px; padding:0.9rem;">
+        ${needsConfirm
+          ? `<div style="color:#FAC775; font-size:0.85rem; font-weight:600; margin-bottom:0.7rem;">⚠ ${escapeHtml(r.confirmation_question || 'Usikker på præcist mærke/model — bekræft for et bedre prisforslag.')}</div>`
+          : `<div style="color:#D7ECEA; font-size:0.78rem; margin-bottom:0.7rem;">Kender du et mærke/model, eller vil du justere stand? Opdatér prisforslaget.</div>`
+        }
+        <input id="brandInput" type="text" placeholder="Mærke / model / designer (valgfrit)" style="width:100%; box-sizing:border-box; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.25); border-radius:8px; padding:0.5rem 0.7rem; color:#fff; font-size:0.85rem; margin-bottom:0.6rem;">
+        <select id="conditionSelect" style="width:100%; box-sizing:border-box; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.25); border-radius:8px; padding:0.5rem 0.7rem; color:#fff; font-size:0.85rem; margin-bottom:0.6rem;">${condOptions}</select>
+        <button id="refineBtn" style="width:100%; padding:0.6rem; border:none; border-radius:8px; background:var(--mint); color:var(--dark); font-size:0.85rem; font-weight:700; cursor:pointer;">Opdatér prisforslag</button>
+        <div id="refineStatus" style="text-align:center; font-size:0.78rem; color:#D7ECEA; margin-top:0.5rem; display:none;"></div>
+      </div>
+    </div>
+  `;
+  reviewCard.querySelector('.copyTitleBtn').addEventListener('click', (e) => copyField(r.title, e.target));
+  reviewCard.querySelector('.copyDescBtn').addEventListener('click', (e) => copyField(r.description, e.target));
+  reviewCard.querySelector('#refineBtn').addEventListener('click', () => refineItem(currentIndex));
+}
+
+async function refineItem(index) {
+  const it = items[index];
+  const brandText = document.getElementById('brandInput').value.trim();
+  const condition = document.getElementById('conditionSelect').value;
+  const btn = document.getElementById('refineBtn');
+  const statusEl = document.getElementById('refineStatus');
+  btn.disabled = true;
+  btn.style.opacity = '0.6';
+  statusEl.style.display = 'block';
+  statusEl.textContent = 'Opdaterer…';
+
+  try {
+    const response = await fetch("/.netlify/functions/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-6",
+        max_tokens: 800,
+        messages: [{
+          role: "user",
+          content: [
+            { type: "image", source: { type: "base64", media_type: it.mediaType, data: it.base64 } },
+            { type: "text", text: refinePrompt(brandText, condition) }
+          ]
+        }]
+      })
+    });
+    if (!response.ok) throw new Error('API-fejl ' + response.status);
+    const data = await response.json();
+    const text = (data.content || []).map(b => b.text || '').join('\n').trim();
+    const clean = text.replace(/```json|```/g, '').trim();
+    const refined = JSON.parse(clean);
+
+    it.result.title = refined.title;
+    it.result.description = refined.description;
+    it.result.price_dkk = refined.price_dkk;
+    it.result.price_reasoning = refined.price_reasoning;
+    it.result.research_tip = refined.research_tip || '';
+    it.result.suggested_condition = condition;
+    it.result.needs_brand_confirmation = false;
+    renderCard();
+  } catch (err) {
+    statusEl.textContent = 'Kunne ikke opdatere: ' + err.message;
+    btn.disabled = false;
+    btn.style.opacity = '1';
+  }
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str == null ? '' : str;
+  return div.innerHTML;
+}
+</script>
+</div>
