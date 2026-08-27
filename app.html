@@ -211,7 +211,7 @@ function showQueue() {
   document.getElementById('turnstileBox').innerHTML = '';
   if (window.turnstile) {
     window.turnstile.render('#turnstileBox', {
-      sitekey: 'TURNSTILE_SITE_KEY',
+      sitekey: '0x4AAAAAAEd9SPEMxCW-Qubj',
       callback: function (token) {
         turnstileToken = token;
         generateAllBtn.disabled = false;
