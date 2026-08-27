@@ -138,6 +138,19 @@ if (gateForm) {
   });
 }
 
+function redeemFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const grant = parseInt(params.get('credits'), 10);
+  if (grant && grant > 0) {
+    const newTotal = getCredits() + grant;
+    localStorage.setItem('snapsaelg_credits', String(newTotal));
+    localStorage.setItem('snapsaelg_signedup', 'true');
+    alert('Tak for dit k\u00f8b! ' + grant + ' credits er tilf\u00f8jet \u2014 du har nu ' + newTotal + ' credits i alt.');
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+}
+
+redeemFromUrl();
 refreshGate();
 
 function resizeImage(file, maxDim = 1568, quality = 0.85) {
