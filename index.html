@@ -264,16 +264,16 @@
 <section class="signup-section">
   <div class="wrap" style="max-width:600px;">
     <span class="eyebrow">Kundeklub</span>
-    <h2>Tilmeld dig og få 5 gratis credits</h2>
+    <h2>Tilmeld dig og brug SnapSælg helt gratis</h2>
     <p>Ingen binding, intet kreditkort — bare din mail.</p>
     <form id="kundeklubForm" name="kundeklub" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="signup-form">
       <input type="hidden" name="form-name" value="kundeklub">
       <p style="position:absolute; left:-9999px;"><label>Udfyld ikke dette felt: <input name="bot-field"></label></p>
       <input type="email" name="email" required placeholder="din@email.dk">
-      <button type="submit" class="btn">Få 5 gratis credits</button>
+      <button type="submit" class="btn">Prøv helt gratis</button>
     </form>
     <div id="kundeklubSuccess" class="signup-success">
-      <div>Tak! Du har nu 5 gratis credits.</div>
+      <div>Tak! Du er tilmeldt og har fuld, gratis adgang.</div>
       <a href="app.html" class="btn" style="background:var(--mint); color:#04191C; margin-top:1rem; display:inline-flex;">Åbn SnapSælg og prøv dit første billede →</a>
     </div>
     <p class="signup-note">Du kan altid afmelde dig igen. Vi sender ikke spam.</p>
@@ -551,7 +551,7 @@
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams(data).toString()
       }).then(function () {
-        localStorage.setItem('snapsaelg_credits', '5');
+        localStorage.setItem('snapsaelg_credits', '999999');
         localStorage.setItem('snapsaelg_signedup', 'true');
         form.style.display = 'none';
         document.getElementById('kundeklubSuccess').style.display = 'block';
