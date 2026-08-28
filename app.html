@@ -15,12 +15,12 @@
     <div id="gateSignupState" style="border:2px solid var(--mint); border-radius:12px; padding:2rem 1.2rem; text-align:center; background:var(--tint);">
       <div style="font-size:1.6rem; margin-bottom:0.5rem;">🔒</div>
       <div style="font-weight:700; font-size:1rem; margin-bottom:0.4rem; color:var(--ink);">Tilmeld dig for at komme i gang</div>
-      <div style="font-size:0.85rem; color:var(--sub); margin-bottom:1.2rem;">Gratis, ingen kreditkort — få 5 credits med det samme.</div>
+      <div style="font-size:0.85rem; color:var(--sub); margin-bottom:1.2rem;">Gratis, ingen kreditkort — helt gratis at bruge lige nu.</div>
       <form id="gateForm" name="kundeklub" method="POST" data-netlify="true" netlify-honeypot="bot-field" style="display:flex; flex-direction:column; gap:0.6rem;">
         <input type="hidden" name="form-name" value="kundeklub">
         <p style="position:absolute; left:-9999px;"><label>Udfyld ikke dette felt: <input name="bot-field"></label></p>
         <input type="email" name="email" required placeholder="din@email.dk" style="padding:0.7rem 1rem; border-radius:999px; border:1.5px solid var(--border); font-size:0.9rem;">
-        <button type="submit" style="padding:0.7rem; border-radius:999px; background:var(--teal); color:#fff; border:none; font-weight:700; cursor:pointer;">Få 5 gratis credits</button>
+        <button type="submit" style="padding:0.7rem; border-radius:999px; background:var(--teal); color:#fff; border:none; font-weight:700; cursor:pointer;">Få gratis adgang</button>
       </form>
     </div>
     <div id="gateUpgradeState" style="display:none; border:2px solid var(--teal); border-radius:12px; padding:2rem 1.2rem; text-align:center; background:var(--tint);">
@@ -111,7 +111,7 @@ function refreshGate() {
     gate.style.display = 'none';
     uploadStep.style.display = 'block';
     badge.style.display = 'inline-block';
-    badge.textContent = credits + (credits === 1 ? ' credit tilbage' : ' credits tilbage');
+    badge.textContent = '✓ Gratis adgang';
     return true;
   }
   uploadStep.style.display = 'none';
@@ -132,7 +132,7 @@ if (gateForm) {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams(data).toString()
     }).then(() => {
-      localStorage.setItem('snapsaelg_credits', '5');
+      localStorage.setItem('snapsaelg_credits', '999999');
       localStorage.setItem('snapsaelg_signedup', 'true');
       refreshGate();
     }).catch(() => {
@@ -211,7 +211,7 @@ function showQueue() {
   document.getElementById('turnstileBox').innerHTML = '';
   if (window.turnstile) {
     window.turnstile.render('#turnstileBox', {
-      sitekey: '0x4AAAAAAEd9SPEMxCW-Qubj',
+      sitekey: 'TURNSTILE_SITE_KEY',
       callback: function (token) {
         turnstileToken = token;
         generateAllBtn.disabled = false;
@@ -325,7 +325,7 @@ generateAllBtn.addEventListener('click', async () => {
   headerSub.textContent = "Gennemgå hver vare, kopiér titel og beskrivelse hver for sig ind i DBA/Facebook/Vinted.";
   const badge = document.getElementById('creditsBadge');
   const c = getCredits();
-  if (c > 0) { badge.textContent = c + (c === 1 ? ' credit tilbage' : ' credits tilbage'); }
+  if (c > 0) { badge.textContent = '✓ Gratis adgang'; }
   else { badge.style.display = 'none'; }
   renderCard();
 });
