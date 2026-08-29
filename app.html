@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SnapSælg — test</title>
 <style>
-  html, body { margin:0; padding:0; background:#1B2B24; }
+  html, body { margin:0; padding:0; background:#22282A; }
 </style>
 </head>
 <body>
-<div style="--teal:#5C7A6B; --seafoam:#6B8F7C; --mint:#8FAE97; --dark:#14211C; --bg:#1B2B24; --card:#24362E; --ink:#F2EFE9; --sub:#A8B5AC; --border:rgba(242,239,233,0.14); --warn:#C97B6B;
+<div style="--teal:#5C7A85; --seafoam:#7A8F94; --mint:#95A8AC; --dark:#1A1E1F; --bg:#22282A; --card:#2C3335; --ink:#F0EFEC; --sub:#A8ACAE; --border:rgba(240,239,236,0.14); --warn:#C97B6B;
   font-family: Calibri, 'Segoe UI', Arial, sans-serif; color: var(--ink); max-width: 640px; margin: 0 auto; padding: 1.5rem 1rem; background:var(--bg); min-height:100vh; box-sizing:border-box;">
 
   <div style="text-align:center; margin-bottom:1.75rem;">
@@ -394,30 +394,30 @@ function renderCard() {
     <div style="background:var(--dark); border:1px solid rgba(255,255,255,0.06); border-radius:12px; padding:1.5rem;">
       <div id="itemImagesRow" style="display:flex; gap:0.5rem; overflow-x:auto; margin-bottom:1.1rem;">
         ${it.images.map(img => `<img src="${img.previewUrl}" style="width:80px; height:80px; object-fit:cover; border-radius:8px; flex-shrink:0; background:rgba(255,255,255,0.06);">`).join('')}
-        <button id="addImageTile" style="width:80px; height:80px; flex-shrink:0; border:1.5px dashed rgba(255,255,255,0.3); border-radius:8px; background:transparent; color:#B8C9BD; font-size:0.7rem; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.2rem;">
+        <button id="addImageTile" style="width:80px; height:80px; flex-shrink:0; border:1.5px dashed rgba(255,255,255,0.3); border-radius:8px; background:transparent; color:#C4CBCC; font-size:0.7rem; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.2rem;">
           <span style="font-size:1.2rem; line-height:1;">+</span>Flere vinkler
         </button>
       </div>
-      <div id="reanalyzeStatus" style="display:none; text-align:center; font-size:0.78rem; color:#C3D4C7; margin-bottom:1rem;">Analyserer med de nye billeder…</div>
+      <div id="reanalyzeStatus" style="display:none; text-align:center; font-size:0.78rem; color:#C9D0D0; margin-bottom:1rem;">Analyserer med de nye billeder…</div>
 
-      <div style="color:#B8C9BD; font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:0.4rem;">Titel</div>
+      <div style="color:#C4CBCC; font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:0.4rem;">Titel</div>
       <div id="titleText" style="color:#fff; font-family:Cambria, Georgia, serif; font-size:1.1rem; font-weight:700; margin-bottom:0.6rem;">${escapeHtml(r.title || '—')}</div>
       <button class="copyTitleBtn" style="width:100%; padding:0.55rem; margin-bottom:1.1rem; border:1px solid rgba(255,255,255,0.25); border-radius:8px; background:transparent; color:#fff; font-size:0.85rem; cursor:pointer;">Kopiér titel</button>
 
-      <div style="color:#B8C9BD; font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:0.4rem;">Beskrivelse</div>
-      <div id="descText" style="color:#DCE5DD; font-size:0.9rem; line-height:1.5; margin-bottom:0.6rem;">${escapeHtml(r.description || '—')}</div>
+      <div style="color:#C4CBCC; font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:0.4rem;">Beskrivelse</div>
+      <div id="descText" style="color:#DFE3E3; font-size:0.9rem; line-height:1.5; margin-bottom:0.6rem;">${escapeHtml(r.description || '—')}</div>
       <button class="copyDescBtn" style="width:100%; padding:0.55rem; margin-bottom:1.1rem; border:1px solid rgba(255,255,255,0.25); border-radius:8px; background:transparent; color:#fff; font-size:0.85rem; cursor:pointer;">Kopiér beskrivelse</button>
 
-      <div style="color:#B8C9BD; font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:0.4rem;">Pris — ret selv hvis du er uenig</div>
+      <div style="color:#C4CBCC; font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:0.4rem;">Pris — ret selv hvis du er uenig</div>
       <div style="display:flex; align-items:center; gap:0.4rem; margin-bottom:0.25rem;">
         <input id="priceInput" type="text" value="${escapeHtml(r.price_dkk || '')}" style="flex:1; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.25); border-radius:8px; padding:0.5rem 0.7rem; color:var(--mint); font-family:Cambria, Georgia, serif; font-size:1.15rem; font-weight:700;">
       </div>
-      <div id="priceReasoning" style="color:#B0BFB3; font-size:0.78rem; margin-bottom:${r.research_tip ? '0.5rem' : '1rem'};">${escapeHtml(r.price_reasoning || '')}</div>
-      ${r.research_tip ? `<div style="background:rgba(143,174,151,0.12); border:1px solid rgba(143,174,151,0.35); border-radius:8px; padding:0.55rem 0.75rem; font-size:0.78rem; color:#C3D4C7; margin-bottom:1rem;">💡 ${escapeHtml(r.research_tip)}</div>` : ''}
+      <div id="priceReasoning" style="color:#B7BEBE; font-size:0.78rem; margin-bottom:${r.research_tip ? '0.5rem' : '1rem'};">${escapeHtml(r.price_reasoning || '')}</div>
+      ${r.research_tip ? `<div style="background:rgba(149,168,172,0.12); border:1px solid rgba(149,168,172,0.35); border-radius:8px; padding:0.55rem 0.75rem; font-size:0.78rem; color:#C9D0D0; margin-bottom:1rem;">💡 ${escapeHtml(r.research_tip)}</div>` : ''}
 
       <div style="display:flex; gap:0.6rem; flex-wrap:wrap; margin-bottom:1rem;">
         <div style="background:rgba(255,255,255,0.08); border-radius:8px; padding:0.5rem 0.7rem; flex:1; min-width:120px;">
-          <div style="color:#B8C9BD; font-size:0.65rem; text-transform:uppercase; margin-bottom:0.2rem;">Kategori</div>
+          <div style="color:#C4CBCC; font-size:0.65rem; text-transform:uppercase; margin-bottom:0.2rem;">Kategori</div>
           <div style="color:#fff; font-size:0.85rem; font-weight:600;">${escapeHtml(r.suggested_category || '—')}</div>
         </div>
       </div>
@@ -425,12 +425,12 @@ function renderCard() {
       <div style="background:${needsConfirm ? 'rgba(186,117,23,0.18)' : 'rgba(255,255,255,0.06)'}; border:1px solid ${needsConfirm ? 'rgba(250,199,117,0.5)' : 'rgba(255,255,255,0.12)'}; border-radius:10px; padding:0.9rem;">
         ${needsConfirm
           ? `<div style="color:#FAC775; font-size:0.85rem; font-weight:600; margin-bottom:0.7rem;">⚠ ${escapeHtml(r.confirmation_question || 'Usikker på præcist mærke/model — bekræft for et bedre prisforslag.')}</div>`
-          : `<div style="color:#DCE5DD; font-size:0.78rem; margin-bottom:0.7rem;">Kender du et mærke/model, eller vil du justere stand? Opdatér prisforslaget.</div>`
+          : `<div style="color:#DFE3E3; font-size:0.78rem; margin-bottom:0.7rem;">Kender du et mærke/model, eller vil du justere stand? Opdatér prisforslaget.</div>`
         }
         <input id="brandInput" type="text" placeholder="Mærke / model / designer (valgfrit)" style="width:100%; box-sizing:border-box; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.25); border-radius:8px; padding:0.5rem 0.7rem; color:#fff; font-size:0.85rem; margin-bottom:0.6rem;">
         <select id="conditionSelect" style="width:100%; box-sizing:border-box; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.25); border-radius:8px; padding:0.5rem 0.7rem; color:#fff; font-size:0.85rem; margin-bottom:0.6rem;">${condOptions}</select>
         <button id="refineBtn" style="width:100%; padding:0.6rem; border:none; border-radius:8px; background:var(--mint); color:var(--dark); font-size:0.85rem; font-weight:700; cursor:pointer;">Opdatér prisforslag</button>
-        <div id="refineStatus" style="text-align:center; font-size:0.78rem; color:#DCE5DD; margin-top:0.5rem; display:none;"></div>
+        <div id="refineStatus" style="text-align:center; font-size:0.78rem; color:#DFE3E3; margin-top:0.5rem; display:none;"></div>
       </div>
     </div>
   `;
