@@ -267,6 +267,8 @@ VIGTIGT om prisestimering — skeln mellem to typer varer:
 - ALMINDELIGE/FUNKTIONELLE varer (fx babyudstyr, husholdningsapparater, standardmøbler uden kendt designer): her varierer prisen ikke meget med mærke. Giv et selvsikkert estimat.
 - DESIGN/LUKSUS/SAMLERVARER (fx designermøbler, ure, smykker, mærkevaretøj, high-end elektronik): her kan prisen variere 10-50x afhængig af det PRÆCISE mærke/designer/model/år. Kig altid efter synlige mærker, stempler, signaturer eller distinkte designtræk. Hvis du IKKE er sikker på det præcise mærke/model, MÅ DU IKKE gætte selvsikkert på prisen. Sæt i stedet needs_brand_confirmation til true, sæt price_dkk til "Bekræft mærke for prisforslag", og skriv et konkret, specifikt spørgsmål i confirmation_question (fx "Denne sofa ligner en designer-model — kender du mærke/designer og evt. årstal?").
 
+Du har adgang til websøgning. Brug den til at tjekke aktuelle salgspriser, når varen er et genkendeligt mærke/model, en dyrere elektronikvare, eller når du er i tvivl om prisniveauet — men spring den over for helt almindelige, lavværdi-varer, hvor et selvsikkert estimat er hurtigere og lige så godt.
+
 Analysér billedet og generér:
 1. Titel (maks. 60 tegn) i stil med dem man ser på DBA
 2. Beskrivelse — maks. 2-3 korte, sælgende sætninger. Skriv som en rigtig sælger, ikke en teknisk specifikation.
@@ -287,7 +289,7 @@ Stand: ${condition}
 
 Opdatér titel og beskrivelse så de afspejler denne bekræftede information. Nævn mærket/designeren, hvis det reelt øger salgsværdien.
 
-Om prisen: Hvis dette nu er en almindelig, veldefineret vare, giv ét selvsikkert prisforslag. MEN hvis dette er en potentielt værdifuld design-, vintage- eller samlervare (fx dansk designmøbel, ure, kunst, antikviteter), hvor den præcise model, produktionsår eller ægthed stadig ikke kan bekræftes ud fra billedet alene: giv i stedet et ærligt, bredere prisinterval (fx "12.000-22.000 kr") frem for et enkelt tal — det er mere korrekt end falsk præcision. Forklar kort i price_reasoning hvorfor der er en range, og nævn eksplicit om prisintervallet du kender bedst til er NYPRIS fra forhandlere eller brugt-pris mellem private, da de kan være meget forskellige. Udfyld desuden research_tip med en kort forklaring af hvad brugeren bør tjekke selv. Udfyld search_query med en kort, konkret Google-søgefrase (3-5 ord, fx "wegner getama sofa brugt"), som brugeren kan klikke sig direkte til — men kun hvis det reelt er en type vare, hvor sådan en søgning giver mening. Ellers lad research_tip og search_query være tomme strenge.
+Om prisen: Du har adgang til websøgning — brug den nu, hvor mærke/model er bekræftet, til at finde aktuelle salgspriser for netop denne model, i den angivne stand. Hvis dette nu er en almindelig, veldefineret vare, giv ét selvsikkert prisforslag baseret på det, du finder. MEN hvis dette er en potentielt værdifuld design-, vintage- eller samlervare (fx dansk designmøbel, ure, kunst, antikviteter), hvor den præcise model, produktionsår eller ægthed stadig ikke kan bekræftes ud fra billedet alene: giv i stedet et ærligt, bredere prisinterval (fx "12.000-22.000 kr") frem for et enkelt tal — det er mere korrekt end falsk præcision. Forklar kort i price_reasoning hvorfor der er en range, og nævn eksplicit om prisintervallet du kender bedst til er NYPRIS fra forhandlere eller brugt-pris mellem private, da de kan være meget forskellige. Udfyld desuden research_tip med en kort forklaring af hvad brugeren bør tjekke selv. Udfyld search_query med en kort, konkret Google-søgefrase (3-5 ord, fx "wegner getama sofa brugt"), som brugeren kan klikke sig direkte til — men kun hvis det reelt er en type vare, hvor sådan en søgning giver mening. Ellers lad research_tip og search_query være tomme strenge.
 
 Svar UDELUKKENDE med gyldig JSON, intet andet:
 {"title": "...", "description": "...", "price_dkk": "...", "price_reasoning": "...", "research_tip": "...", "search_query": "..."}`;
@@ -312,7 +314,8 @@ generateAllBtn.addEventListener('click', async () => {
         body: JSON.stringify({
           turnstile_token: turnstileToken,
           model: "claude-sonnet-4-6",
-          max_tokens: 1000,
+          max_tokens: 1500,
+          tools: [{ type: "web_search_20250305", name: "web_search" }],
           messages: [{
             role: "user",
             content: [
@@ -470,7 +473,8 @@ async function reanalyzeWithAllImages(index) {
       body: JSON.stringify({
         turnstile_token: turnstileToken,
         model: "claude-sonnet-4-6",
-        max_tokens: 1000,
+        max_tokens: 1500,
+        tools: [{ type: "web_search_20250305", name: "web_search" }],
         messages: [{
           role: "user",
           content: [
@@ -510,7 +514,8 @@ async function refineItem(index) {
       body: JSON.stringify({
         turnstile_token: turnstileToken,
         model: "claude-sonnet-4-6",
-        max_tokens: 800,
+        max_tokens: 1200,
+        tools: [{ type: "web_search_20250305", name: "web_search" }],
         messages: [{
           role: "user",
           content: [
