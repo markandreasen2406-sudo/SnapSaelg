@@ -6,10 +6,10 @@
 <title>SnapSælg — Fra rodet reol til salgsklar annonce</title>
 <style>
   :root{
-    --teal:#5C7A6B; --seafoam:#6B8F7C; --mint:#8FAE97;
-    --dark:#14211C; --bg:#1B2B24; --card:#24362E;
-    --ink:#F2EFE9; --sub:#A8B5AC; --border:rgba(242,239,233,0.14);
-    --warn:#C97B6B; --screen:#FAF8F3;
+    --teal:#5C7A85; --seafoam:#7A8F94; --mint:#95A8AC;
+    --dark:#1A1E1F; --bg:#22282A; --card:#2C3335;
+    --ink:#F0EFEC; --sub:#A8ACAE; --border:rgba(240,239,236,0.14);
+    --warn:#C97B6B; --screen:#FAFAF9;
   }
   *{box-sizing:border-box;}
   html{scroll-behavior:smooth;}
@@ -33,7 +33,7 @@
     text-decoration:none; cursor:pointer; border:none; transition:transform .15s, box-shadow .15s;
   }
   .btn:hover{transform:translateY(-1px);}
-  .btn-primary{background:var(--mint); color:#14211C; box-shadow:0 8px 24px rgba(143,174,151,0.25);}
+  .btn-primary{background:var(--mint); color:#1A1E1F; box-shadow:0 8px 24px rgba(149,168,172,0.25);}
   .btn-ghost{background:transparent; color:var(--ink); border:1.5px solid rgba(255,255,255,0.22);}
 
   /* NAV */
@@ -62,7 +62,7 @@
   }
   .phone-screen{background:var(--screen); border-radius:22px; overflow:hidden; padding:1.1rem;}
   .mock-photo{background:linear-gradient(135deg,#DCEEEC,#C7E3E0); border-radius:12px; height:120px; display:flex; align-items:center; justify-content:center; margin-bottom:0.9rem;}
-  .mock-tag{position:absolute; background:var(--mint); color:#14211C; font-size:0.68rem; font-weight:700; padding:0.3rem 0.6rem; border-radius:999px; box-shadow:0 8px 16px rgba(143,174,151,0.35);}
+  .mock-tag{position:absolute; background:var(--mint); color:#1A1E1F; font-size:0.68rem; font-weight:700; padding:0.3rem 0.6rem; border-radius:999px; box-shadow:0 8px 16px rgba(149,168,172,0.35);}
   .mock-tag.t1{top:38%; left:-8%;}
   .mock-tag.t2{top:60%; right:-10%;}
   .mock-title{font-family:Cambria,serif; font-weight:700; font-size:0.92rem; margin-bottom:0.4rem; color:#132B30;}
@@ -113,7 +113,7 @@
   .price-card h3{color:#fff; font-size:1.3rem; margin:0.6rem 0 0.8rem;}
   .price-card .amount{font-family:Cambria,serif; font-size:2.1rem; font-weight:700; color:#fff;}
   .price-card .amount span{font-size:0.95rem; color:var(--sub); font-weight:400;}
-  .price-card ul{list-style:none; padding:0; margin:1.3rem 0 0; font-size:0.9rem; color:#DCE5DD;}
+  .price-card ul{list-style:none; padding:0; margin:1.3rem 0 0; font-size:0.9rem; color:#DFE3E3;}
   .price-card li{padding:0.4rem 0; padding-left:1.4rem; position:relative;}
   .price-card li::before{content:"✓"; position:absolute; left:0; color:var(--mint); font-weight:700;}
 
@@ -126,10 +126,10 @@
   .faq-item.open .plus{transform:rotate(45deg);}
 
   /* CTA */
-  .cta-final{background:linear-gradient(135deg, var(--mint), var(--teal)); color:#14211C; border-radius:24px; padding:3.2rem 2.5rem; text-align:center; margin:0 1.5rem;}
-  .cta-final h2{color:#14211C; font-size:clamp(1.6rem,3vw,2.1rem);}
-  .cta-final p{color:#1E2E27; margin:0.9rem auto 1.8rem; max-width:32rem;}
-  .cta-final .btn-primary{background:#14211C; color:#fff; box-shadow:none;}
+  .cta-final{background:linear-gradient(135deg, var(--mint), var(--teal)); color:#1A1E1F; border-radius:24px; padding:3.2rem 2.5rem; text-align:center; margin:0 1.5rem;}
+  .cta-final h2{color:#1A1E1F; font-size:clamp(1.6rem,3vw,2.1rem);}
+  .cta-final p{color:#282E2F; margin:0.9rem auto 1.8rem; max-width:32rem;}
+  .cta-final .btn-primary{background:#1A1E1F; color:#fff; box-shadow:none;}
 
   footer{padding:3rem 1.5rem 2.5rem; text-align:center; color:var(--sub); font-size:0.85rem;}
   footer .brand{justify-content:center; margin-bottom:0.6rem;}
@@ -137,7 +137,7 @@
   footer .foot-links a{text-decoration:underline; color:var(--sub);}
 
   /* CAMPAIGN STRIP */
-  .campaign-strip{background:var(--mint); color:#14211C; text-align:center; font-size:0.88rem; font-weight:700; padding:0.6rem 1rem;}
+  .campaign-strip{background:var(--mint); color:#1A1E1F; text-align:center; font-size:0.88rem; font-weight:700; padding:0.6rem 1rem;}
   .campaign-strip span{font-weight:400;}
 
   /* ABOUT / STORY */
@@ -175,7 +175,7 @@
   .hero-v2 .eyebrow{justify-content:center;}
   .hero-v2 h1{font-size:clamp(2.4rem,6vw,4.2rem); line-height:1.08; margin:1.1rem 0 1.4rem; color:#fff;}
   .hero-v2 h1 em{font-style:normal; color:var(--mint);}
-  .hero-v2 .lede{font-size:1.15rem; color:#DCE5DD; max-width:32rem; margin:0 auto 2.2rem;}
+  .hero-v2 .lede{font-size:1.15rem; color:#DFE3E3; max-width:32rem; margin:0 auto 2.2rem;}
 
   /* FEEDBACK POPUP */
   .feedback-overlay{display:none; position:fixed; inset:0; background:rgba(2,15,17,0.78); z-index:50; align-items:center; justify-content:center; padding:1.5rem;}
@@ -187,7 +187,7 @@
   .emoji-row{display:flex; justify-content:center; gap:0.55rem; flex-wrap:wrap;}
   .emoji-btn{font-size:1.9rem; background:rgba(255,255,255,0.04); border:1.5px solid var(--border); border-radius:14px; width:54px; height:54px; cursor:pointer; transition:transform .15s, border-color .15s; display:flex; align-items:center; justify-content:center;}
   .emoji-btn:hover{transform:translateY(-3px);}
-  .emoji-btn.selected{border-color:var(--mint); background:rgba(143,174,151,0.12);}
+  .emoji-btn.selected{border-color:var(--mint); background:rgba(149,168,172,0.12);}
   .feedback-detail{display:none; margin-top:1.4rem; text-align:left;}
   .feedback-detail textarea{width:100%; min-height:80px; border-radius:12px; border:1.5px solid var(--border); background:rgba(255,255,255,0.05); color:var(--ink); padding:0.8rem; font-family:inherit; font-size:0.92rem; margin-bottom:1rem; resize:vertical;}
   .feedback-detail textarea::placeholder{color:var(--sub);}
@@ -202,14 +202,14 @@
   .signup-form{display:flex; gap:0.7rem; max-width:420px; margin:1.8rem auto 0; flex-wrap:wrap; justify-content:center;}
   .signup-form input[type="email"]{flex:1; min-width:200px; padding:0.85rem 1.1rem; border-radius:999px; border:1.5px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.06); color:var(--ink); font-size:0.95rem;}
   .signup-form input[type="email"]::placeholder{color:var(--sub);}
-  .signup-form button{background:var(--mint); color:#14211C; border:none;}
+  .signup-form button{background:var(--mint); color:#1A1E1F; border:none;}
   .signup-note{color:var(--sub); font-size:0.78rem; margin-top:0.9rem;}
   .signup-success{display:none; color:var(--mint); font-weight:700; margin-top:1.8rem; font-size:1.05rem;}
 
   /* LIVE EMBED */
   .live-frame{max-width:520px; margin:2.5rem auto 0; background:var(--dark); border-radius:34px; padding:14px; box-shadow:0 30px 70px -20px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.06);}
   .live-frame iframe{width:100%; height:760px; border:none; border-radius:22px; background:var(--screen); display:block;}
-  .live-badge{display:inline-flex; align-items:center; gap:0.4rem; font-size:0.78rem; font-weight:700; color:var(--mint); background:rgba(143,174,151,0.1); border:1px solid rgba(143,174,151,0.3); border-radius:999px; padding:0.3rem 0.8rem; margin:2.5rem 0 0;}
+  .live-badge{display:inline-flex; align-items:center; gap:0.4rem; font-size:0.78rem; font-weight:700; color:var(--mint); background:rgba(149,168,172,0.1); border:1px solid rgba(149,168,172,0.3); border-radius:999px; padding:0.3rem 0.8rem; margin:2.5rem 0 0;}
   .live-badge::before{content:""; width:7px; height:7px; border-radius:50%; background:var(--mint); animation:pulse 1.6s infinite;}
   @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:0.3;}}
 </style>
@@ -263,7 +263,7 @@
     </form>
     <div id="kundeklubSuccess" class="signup-success">
       <div>Tak! Du er tilmeldt og har fuld, gratis adgang.</div>
-      <a href="app.html" class="btn" style="background:var(--mint); color:#14211C; margin-top:1rem; display:inline-flex;">Åbn SnapSælg og prøv dit første billede →</a>
+      <a href="app.html" class="btn" style="background:var(--mint); color:#1A1E1F; margin-top:1rem; display:inline-flex;">Åbn SnapSælg og prøv dit første billede →</a>
     </div>
     <p class="signup-note">Du kan altid afmelde dig igen. Vi sender ikke spam.</p>
   </div>
@@ -352,12 +352,12 @@
       <div class="showcase-col">
         <div class="mini-phone">
           <div class="mini-screen" style="background:var(--dark); padding:1rem;">
-            <div style="color:#B8C9BD; font-size:0.62rem; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:0.3rem;">Titel</div>
+            <div style="color:#C4CBCC; font-size:0.62rem; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:0.3rem;">Titel</div>
             <div style="color:#fff; font-family:Cambria,serif; font-weight:700; font-size:0.9rem; margin-bottom:0.7rem;">Retro pladespiller, virker fint</div>
-            <div style="color:#B8C9BD; font-size:0.62rem; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:0.3rem;">Beskrivelse</div>
-            <div style="color:#DCE5DD; font-size:0.72rem; line-height:1.45; margin-bottom:0.7rem;">Velholdt pladespiller med varm lyd — perfekt til stuen. Sælges pga. flytning.</div>
+            <div style="color:#C4CBCC; font-size:0.62rem; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:0.3rem;">Beskrivelse</div>
+            <div style="color:#DFE3E3; font-size:0.72rem; line-height:1.45; margin-bottom:0.7rem;">Velholdt pladespiller med varm lyd — perfekt til stuen. Sælges pga. flytning.</div>
             <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.08); border-radius:8px; padding:0.5rem 0.7rem;">
-              <span style="font-size:0.68rem; color:#B0BFB3;">Prisforslag</span>
+              <span style="font-size:0.68rem; color:#B7BEBE;">Prisforslag</span>
               <b style="color:var(--mint); font-family:Cambria,serif; font-size:1rem;">450 kr</b>
             </div>
           </div>
