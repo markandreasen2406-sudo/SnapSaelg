@@ -339,32 +339,17 @@
     </div>
     <div class="showcase-row">
       <div class="showcase-col">
-        <div class="mini-phone">
-          <div class="mini-screen">
-            <div class="mini-upload">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#5C7377" stroke-width="1.6" style="margin:0 auto; display:block;"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></svg>
-              <div class="su-title">Tryk for at vælge billeder</div>
-              <div class="su-sub">Ét billede per vare, op til 15 ad gangen</div>
-            </div>
-          </div>
+        <div class="mini-phone" style="padding:8px;">
+          <img src="trin1-upload.png" style="width:100%; border-radius:18px; display:block;">
         </div>
-        <span class="showcase-label">1. Upload</span>
+        <span class="showcase-label">Trin 1 — Upload minimum 1 billede</span>
       </div>
       <div class="showcase-arrow">→</div>
       <div class="showcase-col">
-        <div class="mini-phone">
-          <div class="mini-screen" style="background:var(--dark); padding:1rem;">
-            <div style="color:#C4CBCC; font-size:0.62rem; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:0.3rem;">Titel</div>
-            <div style="color:#fff; font-family:Cambria,serif; font-weight:700; font-size:0.9rem; margin-bottom:0.7rem;">Retro pladespiller, virker fint</div>
-            <div style="color:#C4CBCC; font-size:0.62rem; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:0.3rem;">Beskrivelse</div>
-            <div style="color:#DFE3E3; font-size:0.72rem; line-height:1.45; margin-bottom:0.7rem;">Velholdt pladespiller med varm lyd — perfekt til stuen. Sælges pga. flytning.</div>
-            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.08); border-radius:8px; padding:0.5rem 0.7rem;">
-              <span style="font-size:0.68rem; color:#B7BEBE;">Prisforslag</span>
-              <b style="color:var(--mint); font-family:Cambria,serif; font-size:1rem;">450 kr</b>
-            </div>
-          </div>
+        <div class="mini-phone" style="padding:8px;">
+          <img src="trin2-kopier.png" style="width:100%; border-radius:18px; display:block;">
         </div>
-        <span class="showcase-label">2. Klar til kopiering</span>
+        <span class="showcase-label">Trin 2 — Kopiér og klar til at indsætte</span>
       </div>
     </div>
     <a href="app.html" class="btn btn-primary" style="margin-top:2.5rem;">Prøv det rigtige værktøj nu →</a>
@@ -544,6 +529,7 @@
       }).then(function () {
         localStorage.setItem('snapsaelg_credits', '999999');
         localStorage.setItem('snapsaelg_signedup', 'true');
+        localStorage.setItem('snapsaelg_email', data.get('email') || '');
         form.style.display = 'none';
         document.getElementById('kundeklubSuccess').style.display = 'block';
       }).catch(function () {
