@@ -35,9 +35,9 @@
   <!-- CREDIT GATE -->
   <div id="creditGate" style="display:none;">
     <div id="gateSignupState" style="border:2px solid var(--mint); border-radius:12px; padding:2rem 1.2rem; text-align:center; background:var(--card);">
-      <div style="font-size:1.6rem; margin-bottom:0.5rem;">🔒</div>
-      <div style="font-weight:700; font-size:1rem; margin-bottom:0.4rem; color:var(--ink);">Tilmeld dig vores nyhedsbrev for at komme i gang</div>
-      <div style="font-size:0.85rem; color:var(--sub); margin-bottom:1.2rem;">Helt gratis at bruge — vi sender nyheder og tips, afmeld når som helst.</div>
+      <div id="gateSignupIcon" style="font-size:1.6rem; margin-bottom:0.5rem;">🔒</div>
+      <div id="gateSignupHeading" style="font-weight:700; font-size:1rem; margin-bottom:0.4rem; color:var(--ink);">Tilmeld dig vores nyhedsbrev for at komme i gang</div>
+      <div id="gateSignupSub" style="font-size:0.85rem; color:var(--sub); margin-bottom:1.2rem;">Helt gratis at bruge — vi sender nyheder og tips, afmeld når som helst.</div>
       <form id="gateForm" name="kundeklub" method="POST" data-netlify="true" netlify-honeypot="bot-field" style="display:flex; flex-direction:column; gap:0.6rem;">
         <input type="hidden" name="form-name" value="kundeklub">
         <p style="position:absolute; left:-9999px;"><label>Udfyld ikke dette felt: <input name="bot-field"></label></p>
@@ -132,6 +132,23 @@ function spendCredit() {
   localStorage.setItem('snapsaelg_credits', String(c));
   return c;
 }
+function hasUsedFreeTrial() {
+  return localStorage.getItem('snapsaelg_free_granted') === 'true';
+}
+
+// Alle nye besøgende får automatisk 1 gratis forsøg uden at skulle
+// tilmelde sig noget først — vi beder kun om e-mail, når de vil
+// fortsætte efter deres første, gratis generering. Kører kun for
+// besøgende der reelt aldrig har haft credits før (ikke for nogen der
+// allerede er tilmeldt, eller allerede har fået deres ene gratis forsøg).
+function grantFreeTrialIfEligible() {
+  const neverHadCredits = localStorage.getItem('snapsaelg_credits') === null;
+  if (neverHadCredits && !hasUsedFreeTrial() && !isSignedUp()) {
+    localStorage.setItem('snapsaelg_credits', '1');
+    localStorage.setItem('snapsaelg_free_granted', 'true');
+  }
+}
+
 function refreshGate() {
   const credits = getCredits();
   const gate = document.getElementById('creditGate');
@@ -140,14 +157,29 @@ function refreshGate() {
     gate.style.display = 'none';
     uploadStep.style.display = 'block';
     badge.style.display = 'inline-block';
-    badge.textContent = '✓ Gratis adgang';
+    badge.textContent = isSignedUp() ? '✓ Gratis adgang' : '🎁 1 gratis forsøg';
     return true;
   }
   uploadStep.style.display = 'none';
   gate.style.display = 'block';
   badge.style.display = 'none';
-  document.getElementById('gateSignupState').style.display = isSignedUp() ? 'none' : 'block';
-  document.getElementById('gateUpgradeState').style.display = isSignedUp() ? 'block' : 'none';
+  const signedUp = isSignedUp();
+  document.getElementById('gateSignupState').style.display = signedUp ? 'none' : 'block';
+  document.getElementById('gateUpgradeState').style.display = signedUp ? 'block' : 'none';
+  if (!signedUp) {
+    const icon = document.getElementById('gateSignupIcon');
+    const heading = document.getElementById('gateSignupHeading');
+    const sub = document.getElementById('gateSignupSub');
+    if (hasUsedFreeTrial()) {
+      icon.textContent = '✨';
+      heading.textContent = 'Du har brugt din gratis prøve — håber du kunne lide den!';
+      sub.textContent = 'Tilmeld dig vores nyhedsbrev for at blive ved med at bruge SnapSælg, helt gratis. Ingen binding, afmeld når som helst.';
+    } else {
+      icon.textContent = '🔒';
+      heading.textContent = 'Tilmeld dig vores nyhedsbrev for at komme i gang';
+      sub.textContent = 'Helt gratis at bruge — vi sender nyheder og tips, afmeld når som helst.';
+    }
+  }
   return false;
 }
 
@@ -182,6 +214,7 @@ function redeemFromUrl() {
   }
 }
 
+grantFreeTrialIfEligible();
 redeemFromUrl();
 refreshGate();
 
