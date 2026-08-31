@@ -3,20 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SnapSælg — test</title>
+<title>SnapSælg</title>
 <style>
-  html, body { margin:0; padding:0; background:#22282A; }
+  html, body { margin:0; padding:0; background:#FFFFFF; }
 </style>
 </head>
 <body>
-<div style="--teal:#5C7A85; --seafoam:#7A8F94; --mint:#95A8AC; --dark:#1A1E1F; --bg:#22282A; --card:#2C3335; --ink:#F0EFEC; --sub:#A8ACAE; --border:rgba(240,239,236,0.14); --warn:#C97B6B;
+<div style="--teal:#2B5B6B; --seafoam:#3D7A8C; --mint:#4A8FA3; --dark:#12181A; --bg:#FFFFFF; --card:#F6F7F7; --ink:#15181A; --sub:#666E72; --border:rgba(17,21,22,0.10); --warn:#B23B2E;
   font-family: Calibri, 'Segoe UI', Arial, sans-serif; color: var(--ink); max-width: 640px; margin: 0 auto; padding: 1.5rem 1rem; background:var(--bg); min-height:100vh; box-sizing:border-box;">
 
   <div style="text-align:center; margin-bottom:1.75rem;">
     <div style="width:52px;height:52px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;">
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></svg>
     </div>
-    <h1 style="font-family:Cambria, Georgia, serif; font-size:1.5rem; font-weight:700; margin:0; color:var(--ink);">SnapSælg — test</h1>
+    <h1 style="font-family:Cambria, Georgia, serif; font-size:1.5rem; font-weight:700; margin:0; color:var(--ink);">SnapSælg</h1>
     <p id="headerSub" style="color:var(--sub); font-size:0.9rem; margin:0.35rem 0 0;">Upload op til 15 billeder. Gennemgå dem én ad gangen, kopiér titel og beskrivelse hver for sig.</p>
     <span id="creditsBadge" style="display:none; margin-top:0.6rem; font-size:0.75rem; font-weight:700; color:var(--mint); background:var(--card); border-radius:999px; padding:0.3rem 0.8rem;"></span>
   </div>
@@ -30,7 +30,7 @@
       <form id="gateForm" name="kundeklub" method="POST" data-netlify="true" netlify-honeypot="bot-field" style="display:flex; flex-direction:column; gap:0.6rem;">
         <input type="hidden" name="form-name" value="kundeklub">
         <p style="position:absolute; left:-9999px;"><label>Udfyld ikke dette felt: <input name="bot-field"></label></p>
-        <input type="email" name="email" required placeholder="din@email.dk" style="padding:0.7rem 1rem; border-radius:999px; border:1.5px solid var(--border); background:rgba(255,255,255,0.06); color:var(--ink); font-size:0.9rem;">
+        <input type="email" name="email" required placeholder="din@email.dk" style="padding:0.7rem 1rem; border-radius:999px; border:1.5px solid var(--border); background:var(--card); color:var(--ink); font-size:0.9rem;">
         <button type="submit" style="padding:0.7rem; border-radius:999px; background:var(--mint); color:var(--dark); border:none; font-weight:700; cursor:pointer;">Få gratis adgang</button>
       </form>
     </div>
@@ -45,10 +45,10 @@
   <div id="uploadStep">
     <div id="uploadZone" style="border:2px dashed var(--border); border-radius:12px; padding:2rem 1rem; text-align:center; cursor:pointer; background:var(--card);">
       <input type="file" id="fileInput" accept="image/*" multiple style="display:none">
-      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#A8B5AC" stroke-width="1.6" style="margin-bottom:0.5rem;"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></svg>
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#666E72" stroke-width="1.6" style="margin-bottom:0.5rem;"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></svg>
       <div style="font-size:0.95rem; color:var(--ink); font-weight:600;">Tryk for at vælge billeder</div>
       <div style="font-size:0.8rem; color:var(--sub); margin-top:0.25rem;">Ét billede per vare, op til 15 ad gangen</div>
-      <div style="font-size:0.78rem; color:var(--seafoam); margin-top:0.6rem; background:rgba(0,198,172,0.12); border-radius:6px; padding:0.4rem 0.6rem; display:inline-block;">💡 Tip: læg varen på et lyst tæppe, håndklæde eller stykke karton — så ser billedet pænt ud, selvom rummet ikke er det</div>
+      <div style="font-size:0.78rem; color:var(--seafoam); margin-top:0.6rem; background:rgba(43,91,107,0.1); border-radius:6px; padding:0.4rem 0.6rem; display:inline-block;">💡 Tip: læg varen på et lyst tæppe, håndklæde eller stykke karton — så ser billedet pænt ud, selvom rummet ikke er det</div>
     </div>
   </div>
 
