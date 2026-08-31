@@ -9,8 +9,19 @@
 </style>
 </head>
 <body>
-<div style="--teal:#2B5B6B; --seafoam:#3D7A8C; --mint:#4A8FA3; --dark:#12181A; --bg:#FFFFFF; --card:#F6F7F7; --ink:#15181A; --sub:#666E72; --border:rgba(17,21,22,0.10); --warn:#B23B2E;
+<div id="appRoot" style="--teal:#2B5B6B; --seafoam:#3D7A8C; --mint:#4A8FA3; --dark:#12181A; --bg:#FFFFFF; --card:#F6F7F7; --ink:#15181A; --sub:#666E72; --border:rgba(17,21,22,0.10); --warn:#B23B2E;
   font-family: Calibri, 'Segoe UI', Arial, sans-serif; color: var(--ink); max-width: 640px; margin: 0 auto; padding: 1.5rem 1rem; background:var(--bg); min-height:100vh; box-sizing:border-box;">
+<script>
+  // Når siden vises inde i homepagens live-demo-iframe, skal den ikke
+  // tvinges til at fylde en hel skærmhøjde (100vh) — så kan indholdet
+  // aldrig blive kortere end iframens NUVÆRENDE højde, og den nederste
+  // del af appen (fx "Start forfra"-knappen) risikerer at kræve intern
+  // scroll for at kunne ses. Uden for en iframe (fx app.html besøgt
+  // direkte) beholder vi den fulde skærmhøjde-følelse.
+  if (window.self !== window.top) {
+    document.getElementById('appRoot').style.minHeight = '0';
+  }
+</script>
 
   <div style="text-align:center; margin-bottom:1.75rem;">
     <div style="width:52px;height:52px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;margin:0 auto 0.75rem;">
@@ -552,6 +563,37 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 </script>
+
+<script>
+  // Fortæller forældresiden (homepagens iframe), hvor høj appen faktisk
+  // er lige nu, så iframen kan tilpasse sin højde og vise hele appen
+  // uden intern scroll. Kører kun, når vi rent faktisk er i en iframe.
+  (function () {
+    if (window.self === window.top) return; // besøgt direkte, ikke i iframe
+
+    function reportHeight() {
+      // OBS: brug IKKE document.documentElement.scrollHeight her — den
+      // vokser sammen med iframens eget viewport (den er altid mindst
+      // lige så høj som viewporten), hvilket skaber en uendelig
+      // vokse-i-ring-effekt, når vi bruger tallet til at sætte iframens
+      // højde. #appRoot's egen boks er derimod udelukkende styret af det
+      // faktiske indhold, så den er sikker at måle på.
+      var root = document.getElementById('appRoot');
+      var h = root ? root.offsetHeight : document.body.offsetHeight;
+      window.parent.postMessage({ type: 'snapsaelg-resize', height: h }, window.location.origin);
+    }
+
+    if (window.ResizeObserver) {
+      new ResizeObserver(reportHeight).observe(document.body);
+    }
+    window.addEventListener('load', reportHeight);
+    // Ekstra forsøg efter kort tid, så vi også fanger ting der renderer
+    // lidt forsinket (fx Turnstile-widgeten).
+    setTimeout(reportHeight, 300);
+    setTimeout(reportHeight, 1200);
+  })();
+</script>
+
 </div>
 </body>
 </html>
